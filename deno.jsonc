@@ -1,0 +1,7 @@
+{
+  "imports": {
+    // Map to an exact file
+    "@/": "./"
+    // Map to a directory, usage: "bar/file.ts"
+  }
+}

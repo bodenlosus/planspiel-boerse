@@ -6,9 +6,9 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuLabel,
-  DropdownMenuTrigger
+  DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { LogOut, UserX, Users } from "lucide-react";
+import { LogOut, Users, UserX } from "lucide-react";
 import { useEffect, useState } from "react";
 
 import { UserResponse } from "@supabase/supabase-js";

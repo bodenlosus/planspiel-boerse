@@ -17,5 +17,10 @@
           packages = with pkgs; [ deno ];
         };
       });
+      shellHook = forEachSupportedSystem ({ pkgs }: 
+        ''
+        echo ${pkgs.deno}/bin`"
+      ''
+      );
     };
 }

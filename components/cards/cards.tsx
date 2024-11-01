@@ -13,8 +13,9 @@ import { ComponentPropsWithoutRef } from "react";
 import StockStats from "@/components/stat/stats";
 import { X } from "lucide-react";
 import { cn } from "@/lib/utils";
+import BuyStockDialog from "./buy_stock_dialog";
 
-interface CardProps extends ComponentPropsWithoutRef<"div"> {}
+type CardProps = ComponentPropsWithoutRef<"div">;
 
 interface StatCardProps extends CardProps {
   stock: Stock;
@@ -92,6 +93,31 @@ export function ErrorCard({ error, className }: ErrorCardProps) {
       <CardFooter>
         <Badge className="w-fit">{error.name}</Badge>
       </CardFooter>
+    </Card>
+  );
+}
+
+interface StockPositionCardProps extends CardProps {
+  stock: {name: string, id: number, price: number};
+}
+export function StockPositionCard({
+  className,
+  stock,
+}: StockPositionCardProps) {
+  return (
+    <Card className={cn(className)}>
+      <CardHeader className="flex-row flex-wrap justify-left gap-x-4 gap-y-1">
+        <CardTitle className="">
+          Your Positions
+        </CardTitle>
+      </CardHeader>
+      <CardContent className="grid grid-cols-1 gap-3">
+        {<BuyStockDialog
+          stock={stock}
+          depot={{id: 4, liquidAssets: 5000}}
+        />}
+        
+      </CardContent>
     </Card>
   );
 }

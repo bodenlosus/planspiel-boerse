@@ -94,7 +94,7 @@ const CustomTooltip = ({ active, payload, label }: CustomToolTipProps) => {
   if (!dataPayload) {
     return null;
   }
-  console.log(dataPayload)
+  console.log(dataPayload);
   const row = toAbsoluteValues(dataPayload);
   const displayValues = [
     { name: "Open", string: formatFloatingPointString(row.open, 2) },

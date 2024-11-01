@@ -1,7 +1,12 @@
 "use server";
 
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { ChartCard, ErrorCard, StatCard } from "@/components/cards/cards";
+import { Card } from "@/components/ui/card";
+import {
+  ChartCard,
+  ErrorCard,
+  StatCard,
+  StockPositionCard,
+} from "@/components/cards/cards";
 import {
   getCurrentDate,
   getDateOneWeekAgo,
@@ -39,7 +44,7 @@ export default async function Page({
       end: toISODateOnly(getCurrentDate()),
     });
   } catch (error) {
-    console.error("Invalid URL parameters:");
+    console.error("Invalid URL parameters:", error);
     return <h1>Invalid URL parameters:</h1>;
   }
 
@@ -54,7 +59,7 @@ export default async function Page({
   }
 
   prices.reverse();
-  const formattedPrices = formatPrices(prices);
+  const {dataWithEmptyDays: pricesWithEmptyDays, data: pricesFiltered} = formatPrices(prices);
 
   const startDate = new Date(urlParams.start);
   const endDate = getCurrentDate();
@@ -68,22 +73,14 @@ export default async function Page({
         stock={info[0]}
       />
 
-      <Card className="md:col-span-1 row-span-1 col-span-3">
-        <CardHeader className="flex-row gap-2">
-          <CardTitle className="">Your Assets</CardTitle>
-        </CardHeader>
-        <CardContent className="flex flex-col gap-3">
-          <div className="">
-            <span>521</span> Stocks worth 128.000€
-          </div>
-          <div className="">
-            <span></span>
-          </div>
-        </CardContent>
-      </Card>
+      <StockPositionCard
+      
+        className="md:col-span-1 row-span-1 col-span-3"
+        stock={{name: info[0].name as string, id: info[0].id as number, price: pricesFiltered[0].close}}
+      />
       <ChartCard
         className="col-span-3 row-span-2 md:row-start-2"
-        prices={formattedPrices}
+        prices={pricesWithEmptyDays}
         datePicker={
           <IntervallContainer
             defaultValue={getTimeBetweenDates(startDate, endDate)}
@@ -93,7 +90,7 @@ export default async function Page({
       />
       <Card className="col-span-3 row-span-2 h-min">
         <ScrollArea className="w-full h-[400px] rounded-md border pr-3">
-          <PriceTable prices={formattedPrices.reverse()} />
+          <PriceTable prices={pricesFiltered.reverse()} />
         </ScrollArea>
       </Card>
     </main>

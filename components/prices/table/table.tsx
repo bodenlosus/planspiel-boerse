@@ -3,7 +3,7 @@ import {
   TableBody,
   TableHead,
   TableHeader,
-  TableRow
+  TableRow,
 } from "@/components/ui/table";
 
 import { CellValueTypes } from "./cell";
@@ -12,7 +12,7 @@ import PriceRow from "./row";
 import { cn } from "@/lib/utils";
 
 interface props extends React.ComponentPropsWithRef<"div"> {
-  prices: Array<CleanedStockPrice | null>;
+  prices: Array<CleanedStockPrice>;
 }
 
 export interface PriceColumnOptions {
@@ -53,9 +53,6 @@ export default function PriceTable({ prices, className }: props) {
       </TableHeader>
       <TableBody>
         {prices.map((price, index) => {
-          if (!price) {
-            return;
-          }
           return (
             <PriceRow
               columns={columns}

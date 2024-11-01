@@ -32,7 +32,7 @@ export default function toRelativeValues(
 export function toAbsoluteValues(
   { open_close, high_low, closeLargerOpen, date }: TtoRelativeValues,
 ) {
-  const [open, close] = closeLargerOpen ? open_close: open_close.toReversed();
+  const [open, close] = closeLargerOpen ? open_close : open_close.toReversed();
   const high = high_low[1] + Math.max(open, close);
   const low = Math.max(open, close) - high_low[0];
 

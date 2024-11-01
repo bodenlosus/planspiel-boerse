@@ -1,9 +1,9 @@
-import { CleanedStockPrice, StockPrice } from "@/database/custom_types";
+import { CleanedStockPrice, NonNullableRow, StockPrice } from "@/database/custom_types";
 
 export function formatter(
   data: Array<StockPrice>,
-): Array<CleanedStockPrice | null> {
-  return data.map((price) => {
+) {
+  const dataWithEmptyDays = data.map((price) => {
     if (isNullishRow(price)) {
       return null;
     }
@@ -13,9 +13,12 @@ export function formatter(
       timestamp: formatTimeStamp(price.timestamp),
     } as CleanedStockPrice;
   });
+  const filteredData = dataWithEmptyDays.filter((row) => row != null);
+  return {dataWithEmptyDays, data:filteredData};
+
 }
 
-function isNullishRow(row: Object): row is CleanedStockPrice {
+function isNullishRow<T extends Record<string, unknown>>(row: T): row is NonNullableRow<T> {
   const values = Object.values(row);
 
   return values.includes(null) || values.includes(undefined);
