@@ -40,7 +40,7 @@ export default function LoginForm() {
   });
 
   function onSubmit(values: z.infer<typeof formSchema>) {
-    login(router.push, values);
+    login(values, router.push);
   }
 
   return (

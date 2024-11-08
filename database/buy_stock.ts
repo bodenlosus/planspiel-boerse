@@ -18,5 +18,5 @@ export async function buyStock(
   } else {
     console.log("bought stock:", data);
   }
-  return {error};
+  return { error };
 }

@@ -24,16 +24,22 @@ interface formProps {
   onSubmit?: (values: onSubmitValues) => void;
 }
 
-export interface onSubmitValues { amount: number }
+export interface onSubmitValues {
+  amount: number;
+}
 
-export default function BuyStockForm({ availableBudget, stock, onSubmit}: formProps) {
+export default function BuyStockForm(
+  { availableBudget, stock, onSubmit }: formProps,
+) {
   const maxAmount = Math.floor(availableBudget / stock.price);
   const formSchema = z.object({
     amount: z
-      .coerce.number({message: "Amount must be an Integer"}) // Coerces the input to a number
+      .coerce.number({ message: "Amount must be an Integer" }) // Coerces the input to a number
       .int({ message: "Amount must be an integer" }) // Ensures it's an integer
       .positive({ message: "Amount must be positive" }) // Checks that it's positive
-      .max(maxAmount, { message: `Liquid assets only allow for ${maxAmount} stocks` }) // Limits it to the available budget
+      .max(maxAmount, {
+        message: `Liquid assets only allow for ${maxAmount} stocks`,
+      }), // Limits it to the available budget
   });
 
   const form = useForm<z.infer<typeof formSchema>>({
@@ -46,7 +52,7 @@ export default function BuyStockForm({ availableBudget, stock, onSubmit}: formPr
   // 2. Define a submit handler.
 
   function handleSubmit(values: z.infer<typeof formSchema>) {
-    if (onSubmit){ onSubmit(values);}
+    if (onSubmit) onSubmit(values);
   }
 
   return (

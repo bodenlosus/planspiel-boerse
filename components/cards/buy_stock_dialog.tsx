@@ -22,7 +22,7 @@ interface props extends React.ComponentPropsWithoutRef<"div"> {
   };
   depot: {
     id: number;
-    liquidAssets: number;
+    liquid_assets: number;
   };
 }
 
@@ -73,7 +73,7 @@ export default function BuyStockDialog({ stock, depot }: props) {
         </DialogHeader>
         <BuyStockForm
           stock={stock}
-          availableBudget={depot.liquidAssets}
+          availableBudget={depot.liquid_assets}
           onSubmit={handleStockPurchase}
         />
       </DialogContent>

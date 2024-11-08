@@ -98,12 +98,19 @@ export function ErrorCard({ error, className }: ErrorCardProps) {
 }
 
 interface StockPositionCardProps extends CardProps {
-  stock: {name: string, id: number, price: number};
+  stock: { name: string; id: number; price: number };
+  depot: { id: number, liquid_assets: number  } | null;
+  hidden?: boolean;
 }
 export function StockPositionCard({
   className,
+  hidden,
   stock,
+  depot
 }: StockPositionCardProps) {
+  if (hidden || !depot) {
+    return <></>;
+  }
   return (
     <Card className={cn(className)}>
       <CardHeader className="flex-row flex-wrap justify-left gap-x-4 gap-y-1">
@@ -112,11 +119,12 @@ export function StockPositionCard({
         </CardTitle>
       </CardHeader>
       <CardContent className="grid grid-cols-1 gap-3">
-        {<BuyStockDialog
-          stock={stock}
-          depot={{id: 4, liquidAssets: 5000}}
-        />}
-        
+        {
+          <BuyStockDialog
+            stock={stock}
+            depot={depot}
+          />
+        }
       </CardContent>
     </Card>
   );

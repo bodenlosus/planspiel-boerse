@@ -15,6 +15,7 @@ export async function updateSession(request: NextRequest) {
           return request.cookies.getAll();
         },
         setAll(cookiesToSet) {
+          // eslint-disable-next-line @typescript-eslint/no-unused-vars
           cookiesToSet.forEach(({ name, value, options }) =>
             request.cookies.set(name, value)
           );
@@ -39,7 +40,8 @@ export async function updateSession(request: NextRequest) {
 
   if (
     !user &&
-    !request.nextUrl.pathname.startsWith("/auth")
+    !request.nextUrl.pathname.startsWith("/auth") &&
+    !request.nextUrl.pathname.startsWith("/error")
   ) {
     // no user, potentially respond by redirecting the user to the login page
     const url = request.nextUrl.clone();

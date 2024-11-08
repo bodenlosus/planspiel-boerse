@@ -6,6 +6,7 @@ import { ThemeProvider } from "@/components/theme-provider";
 import { Toaster } from "@/components/ui/toaster";
 import { cn } from "@/lib/utils";
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const inter = FontSans({ subsets: ["latin"] });
 
 export const metadata: Metadata = {

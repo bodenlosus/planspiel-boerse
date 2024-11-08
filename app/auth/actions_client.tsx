@@ -3,8 +3,8 @@
 import { createClient } from "@/utils/supabase/client";
 
 export async function login(
-  redirect: (url: string) => void,
   formData: { email: string; password: string },
+  redirect: (url: string) => void,
 ) {
   const supabase = createClient();
 
@@ -19,6 +19,7 @@ export async function login(
 
   if (error) {
     redirect("/error");
+    return;
   }
 
   // revalidatePath('/', 'layout')

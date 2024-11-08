@@ -1,26 +1,25 @@
 {
-  description = "A Nix-flake-based Deno development environment";
+  description = "A Nix-flake-based Node.js development environment";
 
-  inputs.nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
+  inputs.nixpkgs.url = "github:nixos/nixpkgs/nixpkgs-unstable";
 
   outputs = { self, nixpkgs }:
     let
       supportedSystems = [ "x86_64-linux" "aarch64-linux" "x86_64-darwin" "aarch64-darwin" ];
       forEachSupportedSystem = f: nixpkgs.lib.genAttrs supportedSystems (system: f {
-        pkgs = import nixpkgs { inherit system;};
+        pkgs = import nixpkgs { inherit system; overlays = [ self.overlays.default ]; };
       });
     in
     {
+      overlays.default = final: prev: rec {
+        deno = prev.deno;
+        supabase-cli = prev.supabase-cli;
+      };
 
       devShells = forEachSupportedSystem ({ pkgs }: {
         default = pkgs.mkShell {
-          packages = with pkgs; [ deno ];
+          packages = with pkgs; [ deno supabase-cli ];
         };
       });
-      shellHook = forEachSupportedSystem ({ pkgs }: 
-        ''
-        echo ${pkgs.deno}/bin`"
-      ''
-      );
     };
 }

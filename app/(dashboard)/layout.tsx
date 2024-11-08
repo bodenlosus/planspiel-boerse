@@ -10,7 +10,6 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { ThemeProvider } from "@/components/theme-provider";
 import { Toaster } from "@/components/ui/toaster";
 import { cn } from "@/lib/utils";
-import { supabase } from "@/utils/supabase/client";
 
 export const metadata: Metadata = {
   title: "Planspiel Boerse",
@@ -33,7 +32,6 @@ export default function DashboardLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  supabase;
   return (
     <html lang="en">
       <head>

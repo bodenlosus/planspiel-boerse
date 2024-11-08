@@ -17,14 +17,27 @@ import {
 import { IntervallContainer } from "./pick_intervall";
 import PriceTable from "@/components/prices/table/table";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { fetchStockData } from "@/database/fetch_data";
+import { fetchStockData } from "@/database/fetch_stock_data";
 import { formatter as formatPrices } from "@/lib/data/formatter";
 import { urlSchema } from "./url_scheme";
+import { getUser } from "@/database/get_user_server";
+import { fetchDepotData } from "@/database/fetch_depot_data";
 
 // export async function generateStaticParams() {
 //   const ids = await fetchStockIds(); // Fetch the array of IDs (1000+ IDs)
 //   return ids.slice(0, 10).map(id => ({ id })); // Statically generate only the first 10
 // }
+
+async function fetchDepot(){
+  const user = await getUser()
+  if (!user) return null
+  const { depots, error } = await fetchDepotData({user_id:user.id})
+  if (error) {
+    console.error("Error fetching depots:", error)
+    return null
+  }
+  return depots[0]
+}
 
 export default async function Page({
   params,
@@ -49,6 +62,7 @@ export default async function Page({
   }
 
   const { info, prices, error } = await fetchStockData(urlParams);
+  const depot = fetchDepot()
 
   if (error) {
     return (
@@ -59,10 +73,12 @@ export default async function Page({
   }
 
   prices.reverse();
-  const {dataWithEmptyDays: pricesWithEmptyDays, data: pricesFiltered} = formatPrices(prices);
+  const { dataWithEmptyDays: pricesWithEmptyDays, data: pricesFiltered } =
+    formatPrices(prices);
 
   const startDate = new Date(urlParams.start);
   const endDate = getCurrentDate();
+  
 
   return (
     <main className="w-full h-full overflow-hidden grid sm:grid-cols-2 md:grid-cols-3 gap-5">
@@ -74,9 +90,14 @@ export default async function Page({
       />
 
       <StockPositionCard
-      
+        hidden={!depot}
+        depot={await depot}
         className="md:col-span-1 row-span-1 col-span-3"
-        stock={{name: info[0].name as string, id: info[0].id as number, price: pricesFiltered[0].close}}
+        stock={{
+          name: info[0].name as string,
+          id: info[0].id as number,
+          price: pricesFiltered[0].close,
+        }}
       />
       <ChartCard
         className="col-span-3 row-span-2 md:row-start-2"
