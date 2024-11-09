@@ -22,21 +22,22 @@ import { formatter as formatPrices } from "@/lib/data/formatter";
 import { urlSchema } from "./url_scheme";
 import { getUser } from "@/database/get_user_server";
 import { fetchDepotData } from "@/database/fetch_depot_data";
+import { fetchDepotPositions } from "@/database/fetch_depot_positions";
 
 // export async function generateStaticParams() {
 //   const ids = await fetchStockIds(); // Fetch the array of IDs (1000+ IDs)
 //   return ids.slice(0, 10).map(id => ({ id })); // Statically generate only the first 10
 // }
 
-async function fetchDepot(){
-  const user = await getUser()
-  if (!user) return null
-  const { depots, error } = await fetchDepotData({user_id:user.id})
+async function fetchDepot() {
+  const user = await getUser();
+  if (!user) return null;
+  const { depots, error } = await fetchDepotData({ user_id: user.id });
   if (error) {
-    console.error("Error fetching depots:", error)
-    return null
+    console.error("Error fetching depots:", error);
+    return null;
   }
-  return depots[0]
+  return depots[0];
 }
 
 export default async function Page({
@@ -62,7 +63,15 @@ export default async function Page({
   }
 
   const { info, prices, error } = await fetchStockData(urlParams);
-  const depot = fetchDepot()
+  const depot = fetchDepot();
+  const positions = (async () => {
+    const d = await depot
+    if (!d) return [];
+    const {positions} = await fetchDepotPositions({p_depot_id: d.id, p_stock_id:urlParams.id})
+    return positions
+  })()
+
+  console.log(await depot)
 
   if (error) {
     return (
@@ -78,7 +87,6 @@ export default async function Page({
 
   const startDate = new Date(urlParams.start);
   const endDate = getCurrentDate();
-  
 
   return (
     <main className="w-full h-full overflow-hidden grid sm:grid-cols-2 md:grid-cols-3 gap-5">
@@ -92,6 +100,7 @@ export default async function Page({
       <StockPositionCard
         hidden={!depot}
         depot={await depot}
+        position={(await positions)[0]}
         className="md:col-span-1 row-span-1 col-span-3"
         stock={{
           name: info[0].name as string,

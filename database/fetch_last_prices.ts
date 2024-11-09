@@ -34,5 +34,3 @@ export async function fetchLastPrices(args: {
     success: false,
   };
 }
-
-

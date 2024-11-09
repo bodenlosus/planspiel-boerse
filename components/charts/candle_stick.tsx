@@ -3,11 +3,9 @@ import {
   Bar,
   Cell,
   ComposedChart,
-  ErrorBar,
-  Line,
-  Tooltip,
+  ErrorBar, Tooltip,
   XAxis,
-  YAxis,
+  YAxis
 } from "recharts";
 import {
   ChartConfig,
@@ -46,7 +44,7 @@ export default function CandleStickChart({ data, className }: props) {
         <XAxis
           className="number"
           dataKey={"date"}
-          interval="equidistantPreserveStart"
+          interval="preserveStart"
         >
         </XAxis>
         <YAxis
@@ -63,8 +61,9 @@ export default function CandleStickChart({ data, className }: props) {
               <Cell
                 key={index}
                 radius={4}
+                fillOpacity={0.6}
                 stroke={win ? "hsl(var(--win))" : "hsl(var(--loss))"}
-                fill={win ? "hsl(var(--win)/60)" : "hsl(var(--loss)/60)"}
+                fill={win ? "hsl(var(--win))" : "hsl(var(--loss))"}
               />
             );
           })}
@@ -104,13 +103,13 @@ const CustomTooltip = ({ active, payload, label }: CustomToolTipProps) => {
   ];
   const profit = row.close - row.open;
   return (
-    <div className="bg-background/70 backdrop-blur-lg p-2 rounded shadow border">
+    <div className="bg-background/60 backdrop-blur-lg p-2 rounded shadow border">
       <h1 className="font-semibold text-sm">{label}</h1>
       <Separator orientation="horizontal" className="mb-2" />
       <div className="grid grid-cols-4 gap-2">
         {displayValues.map((value, index) => (
           <>
-            <span className="font-semibold">
+            <span key={index} className="font-semibold">
               {value.name}
             </span>
             <span className="text-right number">{value.string}</span>

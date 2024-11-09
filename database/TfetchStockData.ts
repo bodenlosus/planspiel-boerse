@@ -1,7 +1,6 @@
 import { supabase } from "@/utils/supabase/client";
 import { Stock, StockPrice } from "./custom_types";
 
-
 export interface TfetchStockData {
   info: Array<Stock>;
   prices: Array<StockPrice>;

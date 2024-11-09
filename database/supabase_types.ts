@@ -93,10 +93,10 @@ export type Database = {
     Functions: {
       buy_stock: {
         Args: {
-          timestamp: string
-          depot_id: number
-          stock_id: number
-          amount: number
+          p_timestamp: string
+          p_depot_id: number
+          p_stock_id: number
+          p_amount: number
         }
         Returns: undefined
       }
@@ -233,6 +233,20 @@ export type Database = {
           description: string
         }[]
       }
+      get_stock_position: {
+        Args: {
+          p_depot_id: number
+          p_stock_id: number
+        }
+        Returns: {
+          id: number
+          date: string
+          depot_id: number
+          stock_id: number
+          amount: number
+          price: number
+        }[]
+      }
       get_stock_prices_by_interval: {
         Args: {
           p_stock_id: number
@@ -298,6 +312,15 @@ export type Database = {
           low: number
           volume: number
         }[]
+      }
+      sell_stock: {
+        Args: {
+          p_timestamp: string
+          p_depot_id: number
+          p_stock_id: number
+          p_amount: number
+        }
+        Returns: undefined
       }
       update_depot_values: {
         Args: {

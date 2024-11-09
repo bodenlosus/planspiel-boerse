@@ -90,7 +90,7 @@ export default function AreaChart({ data, className }: props) {
         <XAxis
           className="number"
           dataKey={"date"}
-          interval="equidistantPreserveStart"
+          interval={"preserveStart"}
         >
         </XAxis>
         <YAxis

@@ -1,11 +1,12 @@
 import {
   Card,
   CardContent,
+  CardDescription,
   CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { CleanedStockPrice, Stock, StockPrice } from "@/database/custom_types";
+import { CleanedStockPrice, Stock, StockPosition, StockPrice } from "@/database/custom_types";
 
 import { Badge } from "@/components/ui/badge";
 import ChartContainer from "@/components/charts/container";
@@ -13,7 +14,9 @@ import { ComponentPropsWithoutRef } from "react";
 import StockStats from "@/components/stat/stats";
 import { X } from "lucide-react";
 import { cn } from "@/lib/utils";
-import BuyStockDialog from "./buy_stock_dialog";
+import BuyStockDialog from "../transaction_dialogs/buy_stock_dialog";
+import SellStockDialog from "../transaction_dialogs/sell_stock_dialog";
+import { to_display_string } from "@/lib/cash_display_string";
 
 type CardProps = ComponentPropsWithoutRef<"div">;
 
@@ -62,8 +65,9 @@ export function ChartCard({ prices, datePicker, className }: ChartCardProps) {
   return (
     <Card className={cn(className)}>
       <CardHeader className="flex-col gap-2">
-        <CardTitle className="">Graph View</CardTitle>
-        {prices.at(0)?.timestamp} - {prices.at(-1)?.timestamp}
+        <CardDescription>Graph View</CardDescription>
+        <CardTitle className="">{prices.at(0)?.timestamp} - {prices.at(-1)?.timestamp}</CardTitle>
+        
       </CardHeader>
 
       <CardContent className="grid grid-cols-1 gap-3">
@@ -99,32 +103,56 @@ export function ErrorCard({ error, className }: ErrorCardProps) {
 
 interface StockPositionCardProps extends CardProps {
   stock: { name: string; id: number; price: number };
-  depot: { id: number, liquid_assets: number  } | null;
+  depot?: { id: number; liquid_assets: number } | null;
+  position?: StockPosition;
   hidden?: boolean;
 }
 export function StockPositionCard({
   className,
   hidden,
   stock,
-  depot
+  depot,
+  position
 }: StockPositionCardProps) {
   if (hidden || !depot) {
     return <></>;
   }
+
+  const buyLimit = Math.floor(depot.liquid_assets / stock.price);
+  const sellLimit = position ? position.amount : 0;
+
   return (
     <Card className={cn(className)}>
       <CardHeader className="flex-row flex-wrap justify-left gap-x-4 gap-y-1">
-        <CardTitle className="">
+        <CardDescription className="">
           Your Positions
-        </CardTitle>
+        </CardDescription>
       </CardHeader>
-      <CardContent className="grid grid-cols-1 gap-3">
-        {
-          <BuyStockDialog
-            stock={stock}
-            depot={depot}
-          />
-        }
+      <CardContent className="">
+      <div className="grid grid-cols-2 gap-3 mb-3 pb-3 border-b rounded">
+        <div className="px-4 py-2 flex flex-col flex-nowrap bg-background border border-border/20 rounded shadow-sm">
+        <span className="text-sm">You own</span>
+
+        <span className="text-sm flex flex-row items-baseline gap-1 text-muted-foreground"><span className="text-2xl font-mono font-normal text-foreground">{position ? position.amount: 0 }</span>stocks</span>
+        </div>
+        <div className="px-4 py-2 flex flex-col flex-nowrap bg-background border border-border/20 rounded shadow-sm">
+        <span className="text-sm">worth</span>
+
+        <span className="text-sm flex flex-row items-baseline gap-1 text-muted-foreground"><span className="text-2xl font-mono font-normal text-foreground">{position ? to_display_string(position.amount * stock.price, 2): 0 }</span>USD</span>
+        </div>
+        </div>
+      <div className="grid grid-cols-2 gap-3">
+        <BuyStockDialog
+          stock={stock}
+          depot={{ id: depot.id, monetaryAssets: depot.liquid_assets }}
+          limit={buyLimit}
+        />
+        <SellStockDialog
+          stock={stock}
+          depot={{ id: depot.id, monetaryAssets: depot.liquid_assets }}
+          limit={sellLimit}
+        />
+      </div>
       </CardContent>
     </Card>
   );

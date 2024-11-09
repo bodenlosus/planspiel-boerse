@@ -8,3 +8,12 @@ export type NonNullableRow<T> = {
 };
 export type CleanedStockPrice = NonNullableRow<StockPrice>;
 export type CleanedStock = NonNullableRow<Stock>;
+
+export type StockPosition = {
+  id: number;
+  date: string;
+  depot_id: number;
+  stock_id: number;
+  amount: number;
+  price: number;
+}
