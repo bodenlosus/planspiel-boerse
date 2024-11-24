@@ -32,20 +32,20 @@ const config = {
         foreground: "hsl(var(--foreground))",
         win: "hsl(var(--win))",
         loss: "hsl(var(--loss))",
-        blue: "hsl(var(--blue))",           /* 192, 78%, 55% */
-        blueAlt: "hsl(var(--blueAlt))",     /* 197, 72%, 68% */
-        green: "hsl(var(--green))",         /* 162, 100%, 53% */
-        greenAlt: "hsl(var(--greenAlt))",   /* 160, 82%, 51% */
-        orange: "hsl(var(--orange))",       /* 14, 85%, 73% */
-        magenta: "hsl(var(--magenta))",     /* 323, 66%, 58% */
+        blue: "hsl(var(--blue))", /* 192, 78%, 55% */
+        blueAlt: "hsl(var(--blueAlt))", /* 197, 72%, 68% */
+        green: "hsl(var(--green))", /* 162, 100%, 53% */
+        greenAlt: "hsl(var(--greenAlt))", /* 160, 82%, 51% */
+        orange: "hsl(var(--orange))", /* 14, 85%, 73% */
+        magenta: "hsl(var(--magenta))", /* 323, 66%, 58% */
         magentaAlt: "hsl(var(--magentaAlt))", /* 328, 74%, 63% */
-        red: "hsl(var(--red))",             /* 348, 67%, 64% */
-        redAlt: "hsl(var(--redAlt))",       /* 340, 52%, 66% */
-        purple: "hsl(var(--purple))",       /* 273, 38%, 68% */
-        salmon: "hsl(var(--salmon))",       /* 14, 85%, 73% */
+        red: "hsl(var(--red))", /* 348, 67%, 64% */
+        redAlt: "hsl(var(--redAlt))", /* 340, 52%, 66% */
+        purple: "hsl(var(--purple))", /* 273, 38%, 68% */
+        salmon: "hsl(var(--salmon))", /* 14, 85%, 73% */
         turquoize: "hsl(var(--turquoize))", /* 180, 77%, 47% */
         turquoizeAlt: "hsl(var(--turquoizeAlt))", /* 182, 77%, 58% */
-        yellow: "hsl(var(--yellow))",       /* 35, 86%, 80% */
+        yellow: "hsl(var(--yellow))", /* 35, 86%, 80% */
         yellowAlt: "hsl(var(--yellowAlt))", /* 35, 86%, 80% */
 
         primary: {

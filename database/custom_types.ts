@@ -16,4 +16,4 @@ export type StockPosition = {
   stock_id: number;
   amount: number;
   price: number;
-}
+};

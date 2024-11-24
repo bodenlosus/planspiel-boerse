@@ -3,9 +3,10 @@ import {
   Bar,
   Cell,
   ComposedChart,
-  ErrorBar, Tooltip,
+  ErrorBar,
+  Tooltip,
   XAxis,
-  YAxis
+  YAxis,
 } from "recharts";
 import {
   ChartConfig,

@@ -24,7 +24,7 @@ export interface onSubmitValues {
 }
 
 export default function BuyStockForm(
-  {onSubmit, limit }: formProps,
+  { onSubmit, limit }: formProps,
 ) {
   const formSchema = z.object({
     amount: z

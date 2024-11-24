@@ -27,7 +27,7 @@ const handleStockSale: TTransactionHandler = async (
 };
 
 export default function SellStockDialog(
-  props: { stock: TStock; depot: TDepot, limit: number },
+  props: { stock: TStock; depot: TDepot; limit: number },
 ) {
   return (
     <PrimitiveDialog

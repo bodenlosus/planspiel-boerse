@@ -197,6 +197,19 @@ export type Database = {
         }
         Returns: number
       }
+      get_depot_positions: {
+        Args: {
+          p_depot_id: number
+        }
+        Returns: {
+          id: number
+          date: string
+          depot_id: number
+          stock_id: number
+          amount: number
+          price: number
+        }[]
+      }
       get_depots_of_user: {
         Args: {
           user_id: string

@@ -21,19 +21,19 @@ const handleStockPurchase: TTransactionHandler = async (
     success: {
       message: `Successfully bought ${stock.name} x ${amount} for ${
         (amount * stock.price).toFixed(2)
-      }USD`
+      } USD`,
     },
   };
 };
 
 export default function BuyStockDialog(
-  props: { stock: TStock; depot: TDepot, limit: number },
+  props: { stock: TStock; depot: TDepot; limit: number },
 ) {
   return (
     <PrimitiveDialog
-    reload
-    title="Buy Stock"
-    action="Buy"
+      reload
+      title="Buy Stock"
+      action="Buy"
       {...props}
       handleTransaction={handleStockPurchase}
     />

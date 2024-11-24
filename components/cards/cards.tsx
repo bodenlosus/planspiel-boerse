@@ -6,7 +6,12 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { CleanedStockPrice, Stock, StockPosition, StockPrice } from "@/database/custom_types";
+import {
+  CleanedStockPrice,
+  Stock,
+  StockPosition,
+  StockPrice,
+} from "@/database/custom_types";
 
 import { Badge } from "@/components/ui/badge";
 import ChartContainer from "@/components/charts/container";
@@ -17,6 +22,7 @@ import { cn } from "@/lib/utils";
 import BuyStockDialog from "../transaction_dialogs/buy_stock_dialog";
 import SellStockDialog from "../transaction_dialogs/sell_stock_dialog";
 import { to_display_string } from "@/lib/cash_display_string";
+import { PositionSheet } from "../sheets/positions";
 
 type CardProps = ComponentPropsWithoutRef<"div">;
 
@@ -66,8 +72,9 @@ export function ChartCard({ prices, datePicker, className }: ChartCardProps) {
     <Card className={cn(className)}>
       <CardHeader className="flex-col gap-2">
         <CardDescription>Graph View</CardDescription>
-        <CardTitle className="">{prices.at(0)?.timestamp} - {prices.at(-1)?.timestamp}</CardTitle>
-        
+        <CardTitle className="">
+          {prices.at(0)?.timestamp} - {prices.at(-1)?.timestamp}
+        </CardTitle>
       </CardHeader>
 
       <CardContent className="grid grid-cols-1 gap-3">
@@ -112,7 +119,7 @@ export function StockPositionCard({
   hidden,
   stock,
   depot,
-  position
+  position,
 }: StockPositionCardProps) {
   if (hidden || !depot) {
     return <></>;
@@ -129,31 +136,43 @@ export function StockPositionCard({
         </CardDescription>
       </CardHeader>
       <CardContent className="">
-      <div className="grid grid-cols-2 gap-3 mb-3 pb-3 border-b rounded">
-        <div className="px-4 py-2 flex flex-col flex-nowrap bg-background border border-border/20 rounded shadow-sm">
-        <span className="text-sm">You own</span>
+        <div className="flex flex-row flex-wrap gap-3 w-full *:flex-grow mb-3">
+          <div className="px-4 py-2 flex flex-col flex-nowrap bg-background border border-border/20 rounded shadow-sm">
+            <span className="text-sm text-muted-foreground">You own</span>
 
-        <span className="text-sm flex flex-row items-baseline gap-1 text-muted-foreground"><span className="text-2xl font-mono font-normal text-foreground">{position ? position.amount: 0 }</span>stocks</span>
-        </div>
-        <div className="px-4 py-2 flex flex-col flex-nowrap bg-background border border-border/20 rounded shadow-sm">
-        <span className="text-sm">worth</span>
+            <span className="text-sm flex flex-row items-baseline gap-1 text-muted-foreground">
+              <span className="text-2xl font-mono font-normal text-foreground">
+                {position ? position.amount : 0}
+              </span>
+            </span>
+          </div>
+          <div className="px-4 py-2 flex flex-col flex-nowrap bg-background border border-border/20 rounded shadow-sm">
+            <span className=" text-muted-foreground text-sm">worth</span>
 
-        <span className="text-sm flex flex-row items-baseline gap-1 text-muted-foreground"><span className="text-2xl font-mono font-normal text-foreground">{position ? to_display_string(position.amount * stock.price, 2): 0 }</span>USD</span>
+            <span className="text-sm flex flex-row items-baseline gap-1 text-muted-foreground">
+              <span className="text-2xl font-mono font-normal text-foreground">
+                {position
+                  ? to_display_string(position.amount * stock.price, 2)
+                  : 0}
+              </span>
+            </span>
+          </div>
         </div>
+        <PositionSheet depotID={depot.id} stockID={stock.id} className="mb-4 w-full"></PositionSheet>
+        <div className="grid grid-cols-2 gap-3">
+          <BuyStockDialog
+            stock={stock}
+            depot={{ id: depot.id, monetaryAssets: depot.liquid_assets }}
+            limit={buyLimit}
+          />
+          <SellStockDialog
+            stock={stock}
+            depot={{ id: depot.id, monetaryAssets: depot.liquid_assets }}
+            limit={sellLimit}
+          />
         </div>
-      <div className="grid grid-cols-2 gap-3">
-        <BuyStockDialog
-          stock={stock}
-          depot={{ id: depot.id, monetaryAssets: depot.liquid_assets }}
-          limit={buyLimit}
-        />
-        <SellStockDialog
-          stock={stock}
-          depot={{ id: depot.id, monetaryAssets: depot.liquid_assets }}
-          limit={sellLimit}
-        />
-      </div>
       </CardContent>
     </Card>
   );
 }
+

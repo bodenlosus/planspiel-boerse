@@ -19,14 +19,13 @@ export function StockStat({ name, values }: props) {
           <span className="flex align-baseline">
             <WinLossIndicator sign={relativeChange}></WinLossIndicator>
           </span>
-          
+
           <span className="text-xl font-semibold number">{values.current}</span>
         </span>
         <span className="text-sm font-semibold text-muted-foreground number float-right">
           {relativeChange > 0 ? "+" : "-"}
           {Math.abs(relativeChange).toFixed(2)}%
         </span>
-        
       </span>
     </div>
   );

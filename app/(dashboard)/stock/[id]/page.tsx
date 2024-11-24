@@ -22,7 +22,7 @@ import { formatter as formatPrices } from "@/lib/data/formatter";
 import { urlSchema } from "./url_scheme";
 import { getUser } from "@/database/get_user_server";
 import { fetchDepotData } from "@/database/fetch_depot_data";
-import { fetchDepotPositions } from "@/database/fetch_depot_positions";
+import { fetchStockPosition } from "@/database/fetch_stock_position";
 
 // export async function generateStaticParams() {
 //   const ids = await fetchStockIds(); // Fetch the array of IDs (1000+ IDs)
@@ -65,13 +65,14 @@ export default async function Page({
   const { info, prices, error } = await fetchStockData(urlParams);
   const depot = fetchDepot();
   const positions = (async () => {
-    const d = await depot
+    const d = await depot;
     if (!d) return [];
-    const {positions} = await fetchDepotPositions({p_depot_id: d.id, p_stock_id:urlParams.id})
-    return positions
-  })()
-
-  console.log(await depot)
+    const { positions } = await fetchStockPosition({
+      p_depot_id: d.id,
+      p_stock_id: urlParams.id,
+    });
+    return positions;
+  })();
 
   if (error) {
     return (

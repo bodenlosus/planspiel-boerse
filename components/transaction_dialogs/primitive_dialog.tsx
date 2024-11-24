@@ -20,9 +20,9 @@ interface props extends React.ComponentPropsWithoutRef<"div"> {
   description?: string;
   title?: string;
   action?: string;
-  reload?: boolean,
-  limit: number,
-  triggerVariant?:"default" | "secondary" | "outline"; 
+  reload?: boolean;
+  limit: number;
+  triggerVariant?: "default" | "secondary" | "outline";
 }
 
 export type TStock = {
@@ -42,9 +42,19 @@ export type TTransactionHandler = (
 ) => Promise<{ error: Error | null; success: { message: string } | null }>;
 
 export default function PrimitiveDialog(
-  { stock, depot, handleTransaction, reload, limit, description, title, action, triggerVariant }: props,
+  {
+    stock,
+    depot,
+    handleTransaction,
+    reload,
+    limit,
+    description,
+    title,
+    action,
+    triggerVariant,
+  }: props,
 ) {
-  const router = useRouter()
+  const router = useRouter();
   const handleSubmit = async ({ amount }: onSubmitValues) => {
     const { error, success } = await handleTransaction(stock, amount, depot);
 
@@ -63,8 +73,8 @@ export default function PrimitiveDialog(
       variant: "default",
     });
     setOpen(false);
-    if (reload){
-      router.refresh()
+    if (reload) {
+      router.refresh();
     }
   };
 
@@ -84,11 +94,11 @@ export default function PrimitiveDialog(
         </Button>
       </DialogTrigger>
       <DialogContent>
-      <DialogHeader>
-        <DialogTitle>{title}</DialogTitle>
-        <DialogDescription>{description}</DialogDescription>
-        <DialogClose />
-      </DialogHeader>
+        <DialogHeader>
+          <DialogTitle>{title}</DialogTitle>
+          <DialogDescription>{description}</DialogDescription>
+          <DialogClose />
+        </DialogHeader>
         <BuyStockForm
           onSubmit={handleSubmit}
           limit={limit}
