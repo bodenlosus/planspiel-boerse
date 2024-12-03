@@ -10,6 +10,8 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { ThemeProvider } from "@/components/theme-provider";
 import { Toaster } from "@/components/ui/toaster";
 import { cn } from "@/lib/utils";
+import { Suspense } from "react";
+import PageLoader from "@/components/loaders/page_loader";
 
 export const metadata: Metadata = {
   title: "Planspiel Boerse",
@@ -65,9 +67,11 @@ export default function DashboardLayout({
               "md:mr-0 md:ml-0 md:my-4 gradient-fade-out",
             )}
           >
-            <ScrollArea className="h-full pr-3 mr-1 ">
-              {children}
-            </ScrollArea>
+            <Suspense fallback={<PageLoader></PageLoader>}>
+              <ScrollArea className="h-full pr-3 mr-1 ">
+                {children}
+              </ScrollArea>
+            </Suspense>
           </div>
           <Toaster />
         </ThemeProvider>

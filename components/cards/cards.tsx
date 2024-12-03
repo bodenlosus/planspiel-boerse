@@ -158,7 +158,12 @@ export function StockPositionCard({
             </span>
           </div>
         </div>
-        <PositionSheet depotID={depot.id} stockID={stock.id} className="mb-4 w-full"></PositionSheet>
+        <PositionSheet
+          depotID={depot.id}
+          stockID={stock.id}
+          className="mb-4 w-full"
+        >
+        </PositionSheet>
         <div className="grid grid-cols-2 gap-3">
           <BuyStockDialog
             stock={stock}
@@ -175,4 +180,3 @@ export function StockPositionCard({
     </Card>
   );
 }
-

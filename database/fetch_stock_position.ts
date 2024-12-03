@@ -8,6 +8,7 @@ export interface ReturnT {
   positions: Returns;
   error?: Error;
 }
+
 export async function fetchStockPosition({
   p_depot_id,
   p_stock_id,

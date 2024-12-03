@@ -65,6 +65,7 @@ export default async function Page({
   const { info, prices, error } = await fetchStockData(urlParams);
   const depot = fetchDepot();
   const positions = (async () => {
+    console.log(fetchStockPosition);
     const d = await depot;
     if (!d) return [];
     const { positions } = await fetchStockPosition({
