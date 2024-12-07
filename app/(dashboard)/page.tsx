@@ -26,6 +26,8 @@ import { to_display_string } from "@/lib/cash_display_string";
 import { ClassNameValue } from "tailwind-merge";
 import { cn } from "@/lib/utils";
 import { Card } from "@/components/ui/card";
+import StockStats from "@/components/stat/stats";
+import { Separator } from "@/components/ui/separator";
 
 export default async function Page() {
   const user = await getUser();
@@ -53,7 +55,8 @@ export default async function Page() {
 
 function PositionList({ positions }: { positions: Array<ReturnT> }) {
   return (
-    <Card className="px-6 py-4 gap-4">
+    <Card className="grid grid-cols-[fit-content(10%)_auto] p-3 gap-3 rounded-xl">
+
       {positions.map((position, index) => (
         <PositionRow key={index} position={position}></PositionRow>
       ))}
@@ -69,21 +72,32 @@ function PositionRow(
   { position: { currentPrice, stock, position } }: PositionRowProps,
 ) {
   const possesedValue = position.amount * currentPrice.close;
-  const changeToday = currentPrice.close - currentPrice.open
-  const relativeChangeToday = changeToday / currentPrice.open * 100 
+  const boughtValue = position.amount * position.price
   
   return (
-    <div className="">
-      <div className="w-full flex flex-row justify-between gap-6 text-xl font-semibold">
-        <div>{stock.name}</div>
-        <div>{to_display_string(possesedValue, 2)}</div>
+    <>
+    <div className="p-4 grid grid-cols-subgrid col-span-2 gap-3">
+      <div className="w-fit flex flex-col gap-1">
+        <div className="text-2xl font-bold">{stock.symbol}</div>
+        <div className="text-base text-muted-foreground">{stock.name}</div>
       </div>
-      <div className="w-full grid grid-cols-4">
-        <div>{position.amount}</div>
-        <div>{currentPrice.close}</div>
-        <div>{changeToday.toFixed(2)} {relativeChangeToday.toFixed(2)}%</div>
-      </div>
+      <StockStats 
+        className="mx-3" 
+        structure={{
+          amount: "You own",
+          value: "Worth", 
+          price: "Price per Stock"
+        }} 
+        current={{
+          amount: position.amount,
+          value:possesedValue, 
+          price:currentPrice.close
+        }} 
+        reference={{
+          value:boughtValue, 
+          price:currentPrice.open}}/>
     </div>
+    </>
   );
 }
 

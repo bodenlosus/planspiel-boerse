@@ -39,7 +39,6 @@ export function StatCard({
   referencePrice,
   dateString,
 }: StatCardProps) {
-  referencePrice ??= currentPrice;
   return (
     <Card className={cn(className)}>
       <CardHeader className="flex-row flex-wrap justify-left gap-x-4 gap-y-1">
@@ -51,7 +50,13 @@ export function StatCard({
         <Badge className="w-fit">{stock.description}</Badge>
       </CardHeader>
       <CardContent className="grid grid-cols-1 gap-3">
-        <StockStats price={currentPrice} referencePrice={referencePrice} />
+        <StockStats structure={{
+          "close": "Close",
+          "open": "Open",
+          "high": "High",
+          "low": "Low",
+          "volume": "Volume",
+        }} current={currentPrice} reference={referencePrice} />
         <CardFooter className="h-min p-0">
           <span className="text-sm w-full text-right text-muted-foreground">
             {dateString ?? ""}
