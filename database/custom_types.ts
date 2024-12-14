@@ -1,6 +1,13 @@
 import { Database } from "./supabase_types";
 
-export type StockPrice = Database["public"]["Tables"]["StockPrices"]["Row"];
+export type StockPrice = {
+  close: number;
+  high: number;
+  low: number;
+  open: number;
+  timestamp: string;
+  volume: number;
+}
 export type Stock = Database["public"]["Tables"]["StockInfo"]["Row"];
 
 export type NonNullableRow<T> = {

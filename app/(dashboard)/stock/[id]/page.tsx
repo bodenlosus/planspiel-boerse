@@ -23,22 +23,14 @@ import { urlSchema } from "./url_scheme";
 import { getUser } from "@/database/get_user_server";
 import { fetchDepotData } from "@/database/fetch_depot_data";
 import { fetchStockPosition } from "@/database/fetch_stock_position";
+import { fetchRpc } from "@/database/fetch_rpc";
+import { User } from "@supabase/supabase-js";
+import { redirect } from "next/navigation";
 
 // export async function generateStaticParams() {
 //   const ids = await fetchStockIds(); // Fetch the array of IDs (1000+ IDs)
 //   return ids.slice(0, 10).map(id => ({ id })); // Statically generate only the first 10
 // }
-
-async function fetchDepot() {
-  const user = await getUser();
-  if (!user) return null;
-  const { depots, error } = await fetchDepotData({ user_id: user.id });
-  if (error) {
-    console.error("Error fetching depots:", error);
-    return null;
-  }
-  return depots[0];
-}
 
 export default async function Page({
   params,
@@ -61,19 +53,19 @@ export default async function Page({
     console.error("Invalid URL parameters:", error);
     return <h1>Invalid URL parameters:</h1>;
   }
+  const user = await getUser();
 
-  const { info, prices, error } = await fetchStockData(urlParams);
-  const depot = fetchDepot();
-  const positions = (async () => {
-    console.log(fetchStockPosition);
-    const d = await depot;
-    if (!d) return [];
-    const { positions } = await fetchStockPosition({
-      p_depot_id: d.id,
-      p_stock_id: urlParams.id,
-    });
-    return positions;
-  })();
+  if (!user) {
+    redirect("/auth/login");
+  }
+
+  const {depots, error, positions} = await dataFetcher(user, urlParams.id)
+  const depot = depots ? depots[0] : null;
+  
+  const { info, prices, } = await fetchStockData(urlParams);
+
+  
+
 
   if (error) {
     return (
@@ -127,4 +119,47 @@ export default async function Page({
       </Card>
     </main>
   );
+}
+
+
+async function dataFetcher(user: User, stockId: number) {
+  const depotResponse = await fetchRpc(
+    "get_depots_of_user",
+    { user_id: user.id },
+  );
+
+  if (depotResponse.error) {
+    return ({
+      depots: null,
+      error: depotResponse.error,
+      positions: null,
+    });
+  }
+  if (depotResponse.count === 0) {
+    return ({
+      depots: null,
+      error: new Error(`no depots present for user ${user.id}`),
+      positions: null,
+    });
+  }
+
+  const depots = depotResponse.data;
+
+  const positionResponse = await fetchRpc(
+    "get_stock_position",
+    { p_depot_id: depots[0].id, p_stock_id: stockId},
+  );
+  if (positionResponse.error) {
+    return ({
+      depots: depots,
+      error: positionResponse.error,
+      positions: null,
+    });
+  }
+
+  return ({
+    depots: depots,
+    error: null,
+    positions: positionResponse.data,
+  });
 }

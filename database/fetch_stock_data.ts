@@ -1,5 +1,5 @@
-import { supabase } from "@/utils/supabase/client";
 import { Stock, StockPrice } from "./custom_types";
+import { fetchRpc } from "./fetch_rpc";
 
 export interface TfetchStockData {
   info: Array<Stock>;
@@ -14,14 +14,14 @@ export async function fetchStockData(args: {
   // Handle responses and errors individually
   try {
     const [infoResponse, priceResponse] = await Promise.all([
-      supabase.rpc("get_stock_info_by_id", {
+      fetchRpc("get_stock_info_by_id", {
         p_stock_id: args.id,
-      }, { count: "estimated" }),
-      supabase.rpc("get_stock_prices_by_interval", {
+      }),
+      fetchRpc("get_stock_prices_by_interval", {
         p_stock_id: args.id,
         p_interval_start: args.start,
         p_interval_end: args.end,
-      }, { count: "estimated" }),
+      }),
     ]);
 
     // Check if the responses have data
