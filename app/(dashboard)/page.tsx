@@ -16,6 +16,8 @@ export default async function Page() {
 
   const { depots, positions, error } = await dataFetcher(user);
 
+  console.log(depots)
+
   if (error) {
     return (
       <ErrorCard error={error}>
