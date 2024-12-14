@@ -12,6 +12,7 @@ export const getDateCertainDaysAgo = (days: number) => {
 export const getDateOneWeekAgo = () => getDateCertainDaysAgo(7);
 
 export const getTimeBetweenDates = (startDate: Date, endDate: Date) => {
+  const msPerDay = 1000 * 3600 * 24
   const diffTime = Math.abs(endDate.getTime() - startDate.getTime());
-  return Math.round(diffTime / (1000 * 3600 * 24));
+  return Math.round(diffTime / msPerDay);
 };

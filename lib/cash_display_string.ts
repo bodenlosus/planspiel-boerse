@@ -3,7 +3,8 @@ export function to_display_string(
   dec_places: number,
   absolute?: boolean,
 ): string {
-  const money_amount: number = (absolute === true) ? Math.abs(amount) : amount;
+  const sign = (absolute) ? 1: Math.sign(amount)
+  const money_amount: number = Math.abs(amount);
 
   const abbreviations: Map<number, string> = new Map([
     [1, ""],
@@ -21,7 +22,7 @@ export function to_display_string(
     if (biggest_divisor < divisor && money_amount >= divisor) {
       biggest_divisor = divisor;
       display_string = `${
-        Math.round(money_amount / divisor * pre_round_fac) / pre_round_fac
+        Math.round(money_amount / divisor * pre_round_fac) / pre_round_fac * sign
       }${short}`;
     }
   });

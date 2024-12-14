@@ -15,5 +15,6 @@ export type StockPosition = {
   depot_id: number;
   stock_id: number;
   amount: number;
-  price: number;
+  expenses: number;
+  profit: number;
 };

@@ -14,6 +14,7 @@ const handleStockPurchase: TTransactionHandler = async (
 ) => {
   const { error } = await buyStock(stock.id, depot.id, amount);
   if (error) {
+    console.error("Error buying stock:", error);
     return { error: error, success: null };
   }
   return {
