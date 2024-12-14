@@ -12,13 +12,14 @@
     in
     {
       overlays.default = final: prev: rec {
-        deno = prev.deno;
+        nodejs = prev.nodejs;
         supabase-cli = prev.supabase-cli;
+        yarn = (prev.yarn.override { inherit nodejs; });
       };
 
       devShells = forEachSupportedSystem ({ pkgs }: {
         default = pkgs.mkShell {
-          packages = with pkgs; [ deno supabase-cli ];
+          packages = with pkgs; [ node2nix nodejs nodePackages.pnpm yarn supabase-cli ];
         };
       });
     };

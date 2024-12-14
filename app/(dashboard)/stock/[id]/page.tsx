@@ -21,8 +21,6 @@ import { fetchStockData } from "@/database/fetch_stock_data";
 import { formatter as formatPrices } from "@/lib/data/formatter";
 import { urlSchema } from "./url_scheme";
 import { getUser } from "@/database/get_user_server";
-import { fetchDepotData } from "@/database/fetch_depot_data";
-import { fetchStockPosition } from "@/database/fetch_stock_position";
 import { fetchRpc } from "@/database/fetch_rpc";
 import { User } from "@supabase/supabase-js";
 import { redirect } from "next/navigation";
