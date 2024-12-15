@@ -1,4 +1,4 @@
-import { CleanedStockPrice } from "@/database/custom_types";
+import { CleanedStockPrice, NullableRow, StockPrice } from "@/database/custom_types";
 
 export interface TtoRelativeValues {
   high_low: [number, number];
@@ -7,11 +7,11 @@ export interface TtoRelativeValues {
   closeLargerOpen: boolean;
 }
 export default function toRelativeValues(
-  data: Array<CleanedStockPrice | null>,
-): Array<TtoRelativeValues | null> {
+  data: Array<CleanedStockPrice | NullableRow<StockPrice>>,
+): Array<NullableRow<TtoRelativeValues>> {
   return data.map((price) => {
-    if (!price) {
-      return price;
+    if (!price.close ||!price.open ||!price.high ||!price.low) {
+      return {high_low: null, open_close: null, date: price.timestamp, closeLargerOpen: null};
     }
 
     return {
@@ -40,14 +40,14 @@ export function toAbsoluteValues(
 }
 
 export function flattenOpenClose(
-  rawData: Array<CleanedStockPrice | null>,
+  rawData: Array<CleanedStockPrice | NullableRow<StockPrice>>,
   offset: number,
 ) {
   let max = rawData.at(-1)?.open ?? 0;
   let min = rawData.at(-1)?.open ?? 0;
   const data = rawData.flatMap((entry) => {
-    if (!entry) {
-      return [];
+    if (!entry.close || !entry.open) {
+      return [null, null];
     }
     max = Math.max(max, entry.open, entry.close);
     min = Math.min(min, entry.open, entry.close);

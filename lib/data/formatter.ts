@@ -1,32 +1,60 @@
 import {
   CleanedStockPrice,
-  NonNullableRow,
+  NullableRow,
   StockPrice,
 } from "@/database/custom_types";
+import { getTimeBetweenDates, msPerDay, toISODateOnly } from "../date_utils";
 
 export function formatter(
   data: Array<StockPrice>,
 ) {
-  const dataWithEmptyDays = data.map((price) => {
-    if (isNullishRow(price)) {
-      return null;
+  const dataWithEmptyDays:Array<CleanedStockPrice | NullableRow<StockPrice>> = []
+  data.forEach((price, index) => {
+    const previousTimeStamp = data[index - 1]?.timestamp
+    if (!previousTimeStamp) {
+      dataWithEmptyDays.push(price)
+      return;
     }
-    return {
+
+    const tDiff = getTimeBetweenDates(new Date(previousTimeStamp), new Date(price.timestamp))
+
+    if (tDiff > 1)  {
+      for (let i = 1; i < tDiff; i++){
+        const timestamp = toISODateOnly(new Date(i * msPerDay + new Date(previousTimeStamp).getTime()))
+        dataWithEmptyDays.push({
+          close: null,
+          high: null,
+          low: null,
+          open: null,
+          timestamp:formatTimeStamp(timestamp),
+          volume: null
+        })
+      }
+      
+    }
+
+
+
+    dataWithEmptyDays.push({
       ...price,
       timestamp: formatTimeStamp(price.timestamp),
-    } as CleanedStockPrice;
+    } as CleanedStockPrice);
   });
-  const filteredData = dataWithEmptyDays.filter((row) => row != null);
+  const filteredData = data.map((row) => ({
+    ...row,
+    timestamp: formatTimeStamp(row.timestamp),
+  }));
+
   return { dataWithEmptyDays, data: filteredData };
 }
 
-function isNullishRow<T extends Record<string, unknown>>(
-  row: T,
-): row is NonNullableRow<T> {
-  const values = Object.values(row);
+// function isNullishRow<T extends Record<string, unknown>>(
+//   row: T,
+// ): row is NonNullableRow<T> {
+//   const values = Object.values(row);
 
-  return values.includes(null) || values.includes(undefined);
-}
+//   return values.includes(null) || values.includes(undefined);
+// }
 
 // export const formatFloatingPoints = (
 //   { open, close, high, low }: StockPrice,

@@ -72,8 +72,6 @@ export default async function Page({
       </main>
     );
   }
-
-  prices.reverse();
   const { dataWithEmptyDays: pricesWithEmptyDays, data: pricesFiltered } =
     formatPrices(prices);
 
@@ -84,8 +82,8 @@ export default async function Page({
     <main className="w-full h-full overflow-hidden grid sm:grid-cols-2 md:grid-cols-3 gap-5">
       <StatCard
         className="col-span-3 md:col-span-2"
-        currentPrice={prices[0]}
-        referencePrice={prices[1]}
+        currentPrice={prices.at(-1) ?? prices[0]}
+        referencePrice={prices.at(-2) ?? prices[0]}
         stock={info[0]}
       />
 

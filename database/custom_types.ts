@@ -13,6 +13,10 @@ export type Stock = Database["public"]["Tables"]["StockInfo"]["Row"];
 export type NonNullableRow<T> = {
   [K in keyof T]: NonNullable<T[K]>;
 };
+
+export type NullableRow<T> = {
+  [K in keyof T]: T[K] | null;
+};
 export type CleanedStockPrice = NonNullableRow<StockPrice>;
 export type CleanedStock = NonNullableRow<Stock>;
 

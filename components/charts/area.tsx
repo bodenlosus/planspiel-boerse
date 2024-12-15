@@ -21,9 +21,7 @@ import { formatFloatingPointString } from "@/lib/data/formatter";
 import { Separator } from "../ui/separator";
 
 export default function AreaChart({ data, className }: props) {
-  if (data.some((item) => !item)) {
-    return <h1>No data found</h1>;
-  }
+  console.log(data.find((item) => !item))
   const startValue = data.find((item) => !item === false)?.open ?? 0;
   const {
     data: chartData,
@@ -114,6 +112,7 @@ export default function AreaChart({ data, className }: props) {
           strokeDasharray="6 3"
         />
         <Area
+          connectNulls={true}
           data={chartData}
           dataKey={"value"}
           fillOpacity={1}
