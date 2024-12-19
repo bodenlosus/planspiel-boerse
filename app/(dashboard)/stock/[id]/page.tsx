@@ -78,6 +78,7 @@ export default async function Page({
   const startDate = new Date(urlParams.start);
   const endDate = getCurrentDate();
 
+  
   return (
     <main className="w-full h-full overflow-hidden grid sm:grid-cols-2 md:grid-cols-3 gap-5">
       <StatCard

@@ -223,6 +223,18 @@ export type Database = {
           rn: number
         }[]
       }
+      get_depot_values: {
+        Args: {
+          p_depot_id: number
+          p_interval_start: string
+          p_interval_end: string
+        }
+        Returns: {
+          timestamp: string
+          liquid_assets: number
+          stock_assets: number
+        }[]
+      }
       get_depots_of_user: {
         Args: {
           user_id: string
@@ -374,7 +386,7 @@ export type Database = {
       }
       update_depot_values: {
         Args: {
-          recent_date: string
+          p_timestamp: string
         }
         Returns: undefined
       }

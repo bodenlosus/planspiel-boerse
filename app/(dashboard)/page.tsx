@@ -7,6 +7,7 @@ import {
   restructure
 } from "@/database/restructure_depot_position_data";
 import PositionList from "@/components/displays/position_list";
+import { getCurrentDate, getDateCertainDaysAgo, toISODateOnly } from "@/lib/date_utils";
 export default async function Page() {
   const user = await getUser();
 
@@ -14,7 +15,7 @@ export default async function Page() {
     redirect("/auth/login");
   }
 
-  const { depots, positions, error } = await dataFetcher(user);
+  const { depots, positions, depotValues, error } = await dataFetcher(user);
 
   console.log(depots)
 
@@ -46,6 +47,7 @@ async function dataFetcher(user: User) {
       depots: null,
       error: depotResponse.error,
       positions: null,
+      depotValues: null,
     });
   }
   if (depotResponse.count === 0) {
@@ -53,20 +55,42 @@ async function dataFetcher(user: User) {
       depots: null,
       error: new Error(`no depots present for user ${user.id}`),
       positions: null,
+      depotValues: null,
     });
   }
 
   const depots = depotResponse.data;
 
-  const positionResponse = await fetchRpc(
+  const positionRequest = fetchRpc(
     "get_depot_positions",
     { depot_id_param: depots[0].id, price_count_param:2 },
   );
+
+  const startDate = toISODateOnly(getCurrentDate())
+  const endDate = toISODateOnly(getDateCertainDaysAgo(30))
+  const valueRequest = fetchRpc("get_depot_values", {
+    p_depot_id:depots[0].id, 
+    p_interval_start:startDate, 
+    p_interval_end:endDate
+  })
+
+  const [positionResponse, valueResponse] = await Promise.all([positionRequest, valueRequest])
+
   if (positionResponse.error) {
     return ({
       depots: depots,
       error: positionResponse.error,
       positions: null,
+      depotValues: null,
+    });
+  }
+
+  if (valueResponse.error) {
+    return ({
+      depots: depots,
+      error: valueResponse.error,
+      positions: null,
+      depotValues: null,
     });
   }
 
@@ -74,5 +98,6 @@ async function dataFetcher(user: User) {
     depots: depots,
     error: null,
     positions: positionResponse.data,
+    depotValues: valueResponse.data,
   });
 }
