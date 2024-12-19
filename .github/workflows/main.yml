@@ -24,5 +24,5 @@ jobs:
     - name: Install dependencies
       run: npm install
 
-    - name: build
-      run: npm run build  # Adjust this command if your test script is different
+    - name: lint
+      run: npm run lint  # Adjust this command if your test script is different
