@@ -8,6 +8,7 @@ import {
 } from "@/components/ui/card";
 import {
   CleanedStockPrice,
+  NullableRow,
   Stock,
   StockPosition,
   StockPrice,
@@ -68,7 +69,7 @@ export function StatCard({
 }
 
 interface ChartCardProps extends CardProps {
-  prices: Array<CleanedStockPrice | null>;
+  prices: Array<CleanedStockPrice | NullableRow<StockPrice>>;
   datePicker?: React.ReactNode;
 }
 

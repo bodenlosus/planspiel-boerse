@@ -7,11 +7,9 @@ import { ThemeProvider } from "@/components/theme-provider";
 import { Toaster } from "@/components/ui/toaster";
 import { cn } from "@/lib/utils";
 
-const inter = FontSans({ subsets: ["latin"] });
-
 export const metadata: Metadata = {
-  title: "MoneyTrail",
-  description: "MoneyTrail",
+  title: "Boersenspiel",
+  description: "Boersenspiel",
 };
 
 const fontSans = FontSans({

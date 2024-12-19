@@ -12,7 +12,7 @@ import { props as ChartProps } from "./chart_props";
 
 interface props extends ChartProps, React.ComponentPropsWithoutRef<"div"> {}
 
-export default function ChartContainer({ data, className }: props) {
+export default function ChartContainer({ data, }: props) {
   return (
     <Tabs
       defaultValue="line"

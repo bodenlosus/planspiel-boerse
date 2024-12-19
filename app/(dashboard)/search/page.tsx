@@ -1,7 +1,6 @@
 "use server";
 
-import { Card, CardHeader, CardTitle } from "@/components/ui/card";
-import SearchBar, { SearchBarPopOut } from "@/components/search_bar";
+import SearchBar from "@/components/search_bar";
 import {
   getStockFromSearchString,
   TgetStockFromSearchString,
@@ -19,11 +18,11 @@ export default async function Page({ searchParams }: props) {
   try {
     urlParams = urlSchema().parse({ ...searchParams });
   } catch (error) {
-    console.error("Invalid URL parameters:");
+    console.error("Invalid URL parameters:", error);
     return <h1>Invalid URL parameters:</h1>;
   }
 
-  const { stocks, error, success }: TgetStockFromSearchString = urlParams.query
+  const { stocks, error, }: TgetStockFromSearchString = urlParams.query
     ? await getStockFromSearchString(urlParams.query, 5)
     : { stocks: [], error: null, success: false };
 

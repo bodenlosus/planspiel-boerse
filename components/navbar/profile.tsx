@@ -15,11 +15,13 @@ import { UserResponse } from "@supabase/supabase-js";
 import { createClient } from "@/utils/supabase/client";
 import { logout } from "@/app/auth/actions_client";
 import { useRouter } from "next/navigation";
+import { cn } from "@/lib/utils";
 
 interface UserProfileProps {
+  className?:string;
 }
 
-export function UserProfile({}: UserProfileProps) {
+export function UserProfile({className}: UserProfileProps) {
   const [user, setUser] = useState<UserResponse | null>(null);
   const supabase = createClient();
   const router = useRouter();
@@ -44,7 +46,7 @@ export function UserProfile({}: UserProfileProps) {
   });
   return (
     <>
-      <div>
+      <div className={cn(className)}>
         <DropdownMenu>
           <DropdownMenuTrigger>
             <Avatar className="size-[2.2rem] text-muted-foreground transition-colors hover:text-foreground">
