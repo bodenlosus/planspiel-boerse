@@ -12,6 +12,7 @@
     in
     {
       overlays.default = final: prev: rec {
+        biome = prev.biome;
         nodejs = prev.nodejs;
         supabase-cli = prev.supabase-cli;
         yarn = (prev.yarn.override { inherit nodejs; });
@@ -19,7 +20,7 @@
 
       devShells = forEachSupportedSystem ({ pkgs }: {
         default = pkgs.mkShell {
-          packages = with pkgs; [ node2nix nodejs nodePackages.pnpm yarn supabase-cli nodePackages.vercel];
+          packages = with pkgs; [ node2nix nodejs nodePackages.pnpm yarn supabase-cli nodePackages.vercel biome];
         };
       });
     };

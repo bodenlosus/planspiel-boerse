@@ -1,43 +1,44 @@
-"use server";
+"use server"
 
-import SearchBar from "@/components/search_bar";
+import SearchBar from "@/components/search_bar"
 import {
-  getStockFromSearchString,
-  TgetStockFromSearchString,
-} from "@/database/search_stock";
+	type TgetStockFromSearchString,
+	getStockFromSearchString,
+} from "@/database/search_stock"
 
-import { StockList } from "./stock_list";
-import { urlSchema } from "./url_scheme";
+import { ErrorCard } from "@/components/cards/cards"
+import { StockList } from "./stock_list"
+import { urlSchema } from "./url_scheme"
 
 interface props {
-  searchParams: { query: string };
+	searchParams: { query: string }
 }
 
 export default async function Page({ searchParams }: props) {
-  let urlParams;
-  try {
-    urlParams = urlSchema().parse({ ...searchParams });
-  } catch (error) {
-    console.error("Invalid URL parameters:", error);
-    return <h1>Invalid URL parameters:</h1>;
-  }
+	const { data: urlParams, error: parseError } =
+		urlSchema.safeParse(searchParams)
 
-  const { stocks, error, }: TgetStockFromSearchString = urlParams.query
-    ? await getStockFromSearchString(urlParams.query, 5)
-    : { stocks: [], error: null, success: false };
+	if (parseError) {
+		console.error("Invalid URL parameters:", parseError)
+		return <ErrorCard error={parseError} />
+	}
 
-  if (error) {
-    return (
-      <h1 className="text-destructive">Failed to fetch data from database</h1>
-    );
-  }
+	const { stocks, error }: TgetStockFromSearchString = urlParams.query
+		? await getStockFromSearchString(urlParams.query, 5)
+		: { stocks: [], error: null, success: false }
 
-  return (
-    <main className="w-full h-full overflow-hidden">
-      <div className="w-full flex justify-center">
-        <SearchBar className="w-full bg-background" doRedirect />
-      </div>
-      <StockList stocks={stocks}></StockList>
-    </main>
-  );
+	if (error) {
+		return (
+			<h1 className="text-destructive">Failed to fetch data from database</h1>
+		)
+	}
+
+	return (
+		<main className="w-full h-full overflow-hidden">
+			<div className="w-full flex justify-center">
+				<SearchBar className="w-full bg-background" doRedirect />
+			</div>
+			<StockList stocks={stocks} />
+		</main>
+	)
 }

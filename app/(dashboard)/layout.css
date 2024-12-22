@@ -1,5 +1,5 @@
 .gradient-fade-out {
-  mask-image: linear-gradient(white calc(100% - 2rem), black);
-  mask-mode: luminance;
-  mask-repeat: no-repeat;
+	mask-image: linear-gradient(white calc(100% - 2rem), black);
+	mask-mode: luminance;
+	mask-repeat: no-repeat;
 }
