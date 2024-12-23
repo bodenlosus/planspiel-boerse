@@ -67,7 +67,7 @@ export function UserProfile({ className }: UserProfileProps) {
 						</DropdownMenuItem>
 
 						<DropdownMenuItem
-							onClick={() => logout(router.push)}
+							onClick={() => {logout(router.push)}}
 							className="gap-4"
 						>
 							<LogOut className="size-3.5 stroke-muted-foreground" />

@@ -1,7 +1,6 @@
 "use client"
 
 import { createClient } from "@/utils/supabase/client"
-
 export async function login(
 	formData: { email: string; password: string },
 	redirect: (url: string) => void,
@@ -56,7 +55,6 @@ export async function logout(redirect: (url: string) => void) {
 	const supabase = createClient()
 
 	await supabase.auth.signOut()
-
 	// revalidatePath('/', 'layout')
-	redirect("/")
+	redirect("/auth/login")
 }
