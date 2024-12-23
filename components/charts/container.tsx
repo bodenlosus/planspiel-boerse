@@ -1,12 +1,11 @@
 import "./container.css"
-
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import {
 	CandlestickChart as CandleStickIcon,
 	LineChart as LinechartIcon,
 } from "lucide-react"
 
-import { calculateOffset, flattenOpenClose } from "@/lib/data/data_utils"
+import { calculateOffset } from "@/lib/data/data_utils"
+import type React from "react"
 import CandleStickChart from "./candle_stick"
 import type { props as ChartProps } from "./chart_props"
 import { ChartContainer as CContainer, Chart, ChartIcon } from "./container2"

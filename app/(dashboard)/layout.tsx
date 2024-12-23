@@ -12,7 +12,7 @@ import { Toaster } from "@/components/ui/toaster"
 import { cn } from "@/lib/utils"
 import type { Metadata } from "next"
 import { Suspense } from "react"
-
+import type React from "react"
 export const metadata: Metadata = {
 	title: "Planspiel Boerse",
 	description: "Planspiel Boerse",

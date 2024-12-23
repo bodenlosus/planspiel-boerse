@@ -1,10 +1,6 @@
 import "./container.css"
 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import {
-	CandlestickChart as CandleStickIcon,
-	LineChart as LinechartIcon,
-} from "lucide-react"
 
 import React, { Suspense } from "react"
 import PageLoader from "../loaders/page_loader"
@@ -14,8 +10,6 @@ import {
 	TooltipProvider,
 	TooltipTrigger,
 } from "../ui/tooltip"
-import AreaChart from "./area"
-import CandleStickChart from "./candle_stick"
 
 interface ChartT extends React.ComponentPropsWithoutRef<"div"> {
 	name: string

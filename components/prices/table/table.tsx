@@ -8,9 +8,9 @@ import {
 
 import type { CleanedStockPrice } from "@/database/custom_types"
 import { cn } from "@/lib/utils"
+import type React from "react"
 import type { CellValueTypes } from "./cell"
 import PriceRow from "./row"
-
 interface props extends React.ComponentPropsWithRef<"div"> {
 	prices: Array<CleanedStockPrice>
 }

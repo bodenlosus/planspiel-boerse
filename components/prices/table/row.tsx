@@ -1,4 +1,5 @@
 import { TableRow } from "@/components/ui/table"
+import type React from "react"
 import PriceCell from "./cell"
 import type { PriceColumnOptions } from "./table"
 

@@ -5,9 +5,8 @@ import { Toaster } from "@/components/ui/toaster"
 import { cn } from "@/lib/utils"
 import type { Metadata } from "next"
 import { Inter as FontSans } from "next/font/google"
-
+import type React from "react"
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-const inter = FontSans({ subsets: ["latin"] })
 
 export const metadata: Metadata = {
 	title: "MoneyTrail",

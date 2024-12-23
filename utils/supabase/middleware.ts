@@ -20,7 +20,7 @@ export async function updateSession(request: NextRequest) {
 			},
 			setAll(cookiesToSet) {
 				// eslint-disable-next-line @typescript-eslint/no-unused-vars
-				for (const { name, value, options } of cookiesToSet) {
+				for (const { name, value, options: _ } of cookiesToSet) {
 					request.cookies.set(name, value)
 				}
 				supabaseResponse = NextResponse.next({

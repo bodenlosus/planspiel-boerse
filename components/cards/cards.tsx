@@ -1,3 +1,5 @@
+import StockStats from "@/components/stat/stats"
+import { Badge } from "@/components/ui/badge"
 import {
 	Card,
 	CardContent,
@@ -13,12 +15,10 @@ import type {
 	StockPosition,
 	StockPrice,
 } from "@/database/custom_types"
-
-import StockStats from "@/components/stat/stats"
-import { Badge } from "@/components/ui/badge"
 import { to_display_string } from "@/lib/cash_display_string"
 import { cn } from "@/lib/utils"
 import { X } from "lucide-react"
+import type React from "react"
 import type { ComponentPropsWithoutRef } from "react"
 import ChartContainer from "../charts/container"
 import { PositionSheet } from "../sheets/positions"

@@ -79,5 +79,3 @@ export const formatFloatingPointString = (
 ): string => {
 	return value.toFixed(digits)
 }
-
-const formatTimeStamp = (timestamp: string): string => timestamp

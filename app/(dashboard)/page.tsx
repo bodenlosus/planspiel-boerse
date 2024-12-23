@@ -11,17 +11,13 @@ import { fetchRpc } from "@/database/fetch_rpc"
 import { getUser } from "@/database/get_user_server"
 import { restructure } from "@/database/restructure_depot_position_data"
 import { calculateOffset } from "@/lib/data/data_utils"
-import { formatter } from "@/lib/data/formatter"
 import {
 	getCurrentDate,
 	getDateCertainDaysAgo,
 	toISODateOnly,
 } from "@/lib/date_utils"
 import type { User } from "@supabase/supabase-js"
-import {
-	CandlestickChart as CandleStickIcon,
-	LineChart as LinechartIcon,
-} from "lucide-react"
+import { LineChart as LinechartIcon } from "lucide-react"
 import { redirect } from "next/navigation"
 export default async function Page() {
 	const user = await getUser()
@@ -30,7 +26,7 @@ export default async function Page() {
 		redirect("/auth/login")
 	}
 
-	const { depots, positions, depotValues, error } = await dataFetcher(user)
+	const { depots: _, positions, depotValues, error } = await dataFetcher(user)
 
 	if (error) {
 		return <ErrorCard error={error} />
