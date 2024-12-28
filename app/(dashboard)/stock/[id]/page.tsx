@@ -84,8 +84,8 @@ export default async function Page({
 
 			<StockPositionCard
 				hidden={!depot}
-				depot={await depot}
-				position={(await positions)[0]}
+				depot={depot}
+				position={(positions)[0]}
 				className="md:col-span-1 row-span-1 col-span-3"
 				stock={{
 					name: info[0].name as string,

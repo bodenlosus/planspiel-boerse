@@ -13,7 +13,7 @@ export function restructure(data: dataT): Array<ReturnT> {
 	for (const row of data) {
 		const restrucRow = {
 			stock: {
-				id: row.stock_id,
+				id: row.stockid,
 				name: row.name,
 				symbol: row.symbol,
 				description: row.description,
