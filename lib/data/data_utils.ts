@@ -53,22 +53,19 @@ export function toAbsoluteValues({
 
 export function flattenOpenClose(
 	rawData: Array<CleanedStockPrice | NullableRow<StockPrice>>,
-	offset: number,
 ) {
-	let max = rawData.at(-1)?.open ?? 0
-	let min = rawData.at(-1)?.open ?? 0
 	const data = rawData.flatMap((entry) => {
-		if (!entry.close || !entry.open) {
-			return [null, null]
-		}
-		max = Math.max(max, entry.open, entry.close)
-		min = Math.min(min, entry.open, entry.close)
+		// if (!entry.close || !entry.open) {
+		// 	return [
+		// 		{date: entry.timestamp, value: 1, ax: 1}, 
+		// 		{date: entry.timestamp, value: 1, ax: 1}]
+		// }
 		return [
-			{ date: entry.timestamp, value: entry.open + offset, ax: entry.open },
-			{ date: entry.timestamp, value: entry.close + offset, ax: entry.close },
+			{ date: entry.timestamp, value: entry.open, ax: entry.open },
+			{ date: entry.timestamp, value: entry.close, ax: entry.close },
 		]
 	})
-	return { data: data, maxValue: max, minValue: min }
+	return data
 }
 
 export function calculateOffset<T extends Record<string, number | string>>(

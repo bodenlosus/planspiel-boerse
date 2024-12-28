@@ -11,6 +11,7 @@ import { cn } from "@/lib/utils"
 import type React from "react"
 import {
 	Area,
+	AreaChart as RechartsAreaChart,
 	ComposedChart,
 	ReferenceLine,
 	type Tooltip,
@@ -38,15 +39,7 @@ export default function AreaChart<T extends Record<string, number | string>>({
 	yKey,
 	startValue,
 }: props<T>) {
-	const chartData = data.map((item) => {
-		if (!item[dataKey]) {
-			return item[dataKey]
-		}
-		return {
-			...item,
-			[dataKey]: (item[dataKey] as number) - startValue,
-		}
-	})
+
 	const chartConfig = {
 		open: {
 			label: "Open",
@@ -61,7 +54,7 @@ export default function AreaChart<T extends Record<string, number | string>>({
 			className={cn("min-h[200px]", className)}
 			config={chartConfig}
 		>
-			<ComposedChart accessibilityLayer data={chartData}>
+			<RechartsAreaChart accessibilityLayer data={data}>
 				<defs>
 					<linearGradient id={"fill"} x1="0" y1="0" x2="0" y2="1">
 						<stop offset="0" stopColor={"hsl(var(--win))"} stopOpacity={0.7} />
@@ -104,25 +97,26 @@ export default function AreaChart<T extends Record<string, number | string>>({
 				<XAxis className="number" dataKey={xKey} interval={"preserveStart"} />
 				<YAxis
 					dataKey={yKey}
-					tickFormatter={(value) => to_display_string(value + startValue, 2)}
+					tickFormatter={(value) => to_display_string(value, 2)}
 					className="number"
 					padding={{ top: 15, bottom: 15 }}
 					domain={["min", "max"]}
 				/>
 				<ChartTooltip
 					filterNull
-					content={<CustomTooltip valueOffset={startValue} />}
+					content={<CustomTooltip/>}
 				/>
 				<ReferenceLine
-					y={0}
+					y={startValue}
 					strokeWidth={0.5}
 					isFront
 					stroke="hsl(var(--foreground)/50)"
 					strokeDasharray="6 3"
 				/>
 				<Area
+					baseValue={startValue}
 					connectNulls={true}
-					data={chartData}
+					data={data}
 					dataKey={dataKey}
 					fillOpacity={1}
 					type="monotone"
@@ -130,20 +124,17 @@ export default function AreaChart<T extends Record<string, number | string>>({
 					strokeWidth={2}
 					fill="url(#fill)"
 				/>
-			</ComposedChart>
+			</RechartsAreaChart>
 		</ChartContainer>
 	)
 }
 
-interface CustomTooltipProps extends React.ComponentProps<typeof Tooltip> {
-	valueOffset?: number
-}
+type CustomTooltipProps = React.ComponentProps<typeof Tooltip>
 
 const CustomTooltip = ({
 	active,
 	payload,
 	label,
-	valueOffset,
 }: CustomTooltipProps) => {
 	if (!active || !payload || !payload.length) {
 		return null
@@ -153,7 +144,7 @@ const CustomTooltip = ({
 
 	const displayString = Number.isNaN(value)
 		? "No value"
-		: to_display_string((value as number) + (valueOffset ?? 0), 2)
+		: to_display_string((value as number), 2)
 
 	return (
 		<div className="bg-background/70 backdrop-blur-lg p-2 text-sm rounded shadow border">

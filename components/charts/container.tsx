@@ -1,10 +1,11 @@
+"use client"
 import "./container.css"
 import {
 	CandlestickChart as CandleStickIcon,
 	LineChart as LinechartIcon,
 } from "lucide-react"
 
-import { calculateOffset } from "@/lib/data/data_utils"
+import toRelativeValues, { calculateOffset, flattenOpenClose } from "@/lib/data/data_utils"
 import type React from "react"
 import CandleStickChart from "./candle_stick"
 import type { props as ChartProps } from "./chart_props"
@@ -14,7 +15,10 @@ import AreaChart from "./value_area"
 interface props extends ChartProps, React.ComponentPropsWithoutRef<"div"> {}
 
 export default function ChartContainer({ data }: props) {
-	const area = calculateOffset(data, "close")
+	const areaData = flattenOpenClose(data)
+	const area = calculateOffset(areaData, "value")
+
+	const candleData = toRelativeValues(data)
 	return (
 		<CContainer
 			defaultName="line"
@@ -23,16 +27,20 @@ export default function ChartContainer({ data }: props) {
 			<Chart name="candlestick">
 				<CandleStickChart
 					className="aspect-[4/3] md:aspect-[20/9] lg:aspect-[6/2] xl:aspect-[8/2]"
-					data={data}
+					data={candleData}
+					xKey="date"
+					barKey="open_close"
+					errorKey="high_low"
+                    winKey="closeLargerOpen"                   
 				/>
 			</Chart>
 			<Chart name="line">
 				<AreaChart
 					className="aspect-[4/3] md:aspect-[20/9] lg:aspect-[6/2] xl:aspect-[8/2]"
-					data={data}
-					dataKey="close"
-					xKey="timestamp"
-					yKey="close"
+					data={areaData}
+					dataKey="value"
+					xKey="date"
+					yKey="value"
 					offset={area.offset}
 					startValue={area.startValue}
 				/>

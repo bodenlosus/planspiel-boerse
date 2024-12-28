@@ -23,10 +23,17 @@ import toRelativeValues, {
 } from "../../lib/data/data_utils"
 import { WinLossIndicator } from "../stat/indicator"
 import { Separator } from "../ui/separator"
-import type { props } from "./chart_props"
+import type { NullableRow } from "@/database/custom_types"
 
-export default function CandleStickChart({ data, className }: props) {
-	const chartData = toRelativeValues(data) //data
+interface props<T extends Record<string, [number, number] | string | boolean>> extends React.ComponentPropsWithoutRef<"div"> {
+	data: Array<T | NullableRow<T>>
+	barKey: Extract<keyof T, string>
+	errorKey: Extract<keyof T, string>
+	winKey: Extract<keyof T, string>
+	xKey: Extract<keyof T, string>
+}
+export default function CandleStickChart<T extends Record<string, [number, number] | string | boolean>>({ data, className, xKey, barKey, errorKey, winKey }: props<T>) {
+	const chartData = data //data
 	const chartConfig = {
 		open: {
 			label: "Open",
@@ -42,19 +49,19 @@ export default function CandleStickChart({ data, className }: props) {
 			config={chartConfig}
 		>
 			<ComposedChart accessibilityLayer data={chartData}>
-				<XAxis className="number" dataKey={"date"} interval="preserveStart" />
+				<XAxis className="number" dataKey={xKey} interval="preserveStart" />
 				<YAxis
 					tickFormatter={(value) => formatFloatingPointString(value, 2)}
 					className="number"
 					padding={{ top: 20, bottom: 20 }}
 					domain={["min", "max"]}
 				/>
-				<Bar dataKey={"open_close"} fill="hsl(var(--win))">
+				<Bar dataKey={barKey} fill="hsl(var(--win))">
 					{chartData.map((entry) => {
-						const win = entry?.closeLargerOpen
+						const win = entry[winKey]
 						return (
 							<Cell
-								key={entry.date}
+								key={entry[xKey] as string}
 								radius={4}
 								fillOpacity={0.6}
 								stroke={win ? "hsl(var(--win))" : "hsl(var(--loss))"}
@@ -63,7 +70,7 @@ export default function CandleStickChart({ data, className }: props) {
 						)
 					})}
 					<ErrorBar
-						dataKey={"high_low"}
+						dataKey={errorKey}
 						width={2}
 						strokeWidth={2}
 						stroke="hsl(var(--foreground)/.7)"

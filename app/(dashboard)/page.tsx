@@ -6,6 +6,7 @@ import {
 } from "@/components/charts/container2"
 import AreaChart from "@/components/charts/value_area"
 import PositionList from "@/components/displays/position_list"
+import PageLoader from "@/components/loaders/page_loader"
 import { Card } from "@/components/ui/card"
 import { fetchRpc } from "@/database/fetch_rpc"
 import { getUser } from "@/database/get_user_server"
@@ -19,6 +20,7 @@ import {
 import type { User } from "@supabase/supabase-js"
 import { LineChart as LinechartIcon } from "lucide-react"
 import { redirect } from "next/navigation"
+import { Suspense } from "react"
 export default async function Page() {
 	const user = await getUser()
 
@@ -26,36 +28,44 @@ export default async function Page() {
 		redirect("/auth/login")
 	}
 
-	const { depots: _, positions, depotValues, error } = await dataFetcher(user)
+	return (
+		<main>
+			<Suspense>
+				<PageInner dataPromise={dataFetcher(user)}/>
+			</Suspense>
+		</main>
+	)
+}
 
+async function PageInner ({dataPromise}:{dataPromise: ReturnType<typeof dataFetcher>}) {
+	const { depots: _, positions, depotValues, error } = await dataPromise
 	if (error) {
 		return <ErrorCard error={error} />
 	}
 
 	const { startValue, offset } = calculateOffset(depotValues, "stock_assets")
-
 	return (
-		<main>
-			<Card>
-				<ChartContainer defaultName="line">
-					<Chart name="line">
-						<AreaChart
-							className="aspect-[4/3] md:aspect-[20/9] lg:aspect-[6/2] xl:aspect-[8/2]"
-							startValue={startValue}
-							offset={offset}
-							data={depotValues}
-							dataKey="stock_assets"
-							xKey="timestamp"
-							yKey="stock_assets"
-						/>
-					</Chart>
-					<ChartIcon name="line">
-						<LinechartIcon className="size-7 md:size-5 stroke-muted-foreground" />
-					</ChartIcon>
-				</ChartContainer>
-			</Card>
-			<PositionList positions={restructure(positions)} />
-		</main>
+		<>
+	<Card>
+		<ChartContainer defaultName="line">
+			<Chart name="line">
+				<AreaChart
+					className="aspect-[4/3] md:aspect-[20/9] lg:aspect-[6/2] xl:aspect-[8/2]"
+					startValue={startValue}
+					offset={offset}
+					data={depotValues}
+					dataKey="stock_assets"
+					xKey="timestamp"
+					yKey="stock_assets"
+				/>
+			</Chart>
+			<ChartIcon name="line">
+				<LinechartIcon className="size-7 md:size-5 stroke-muted-foreground" />
+			</ChartIcon>
+		</ChartContainer>
+	</Card>
+	<PositionList positions={restructure(positions)} />
+	</>
 	)
 }
 

@@ -5,6 +5,8 @@ import get_sign from "@/lib/data/get_sign"
 import { cn } from "@/lib/utils"
 import type { PriceColumnOptions } from "./table"
 
+import type React from "react"
+
 export type CellValueTypes = "int" | "float" | "string"
 
 interface PriceCellProps extends React.ComponentPropsWithoutRef<"div"> {

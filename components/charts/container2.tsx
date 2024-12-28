@@ -37,7 +37,7 @@ export function ChartContainer({
 	className,
 }: ChartContainerT) {
 	return (
-		<Suspense fallback={<PageLoader />}>
+		<Suspense fallback={<PageLoader/>}>
 			<Tabs defaultValue={defaultName} className={className}>
 				{React.Children.map(children, (child) => {
 					if (!React.isValidElement(child)) {
