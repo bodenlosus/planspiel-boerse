@@ -1,3 +1,4 @@
+import { useToast } from "@/hooks/use-toast"
 import { useRouter } from "next/navigation"
 import React from "react"
 import { Button } from "../ui/button"
@@ -10,7 +11,6 @@ import {
 	DialogTitle,
 	DialogTrigger,
 } from "../ui/dialog"
-import { useToast } from "../ui/use-toast"
 import BuyStockForm, { type onSubmitValues } from "./buy_stock_form"
 
 interface props extends React.ComponentPropsWithoutRef<"div"> {
@@ -53,11 +53,13 @@ export default function PrimitiveDialog({
 	triggerVariant,
 }: props) {
 	const router = useRouter()
+	const [isOpen, setOpen] = React.useState(false)
+	const toast = useToast()
 	const handleSubmit = async ({ amount }: onSubmitValues) => {
 		const { error, success } = await handleTransaction(stock, amount, depot)
 
 		if (error) {
-			toast({
+			toast.toast({
 				title: "Failed Transaction",
 				description: error?.message,
 				variant: "destructive",
@@ -65,7 +67,7 @@ export default function PrimitiveDialog({
 			return
 		}
 
-		toast({
+		toast.toast({
 			title: "Successfull Transaction",
 			description: success?.message,
 			variant: "default",
@@ -76,8 +78,6 @@ export default function PrimitiveDialog({
 		}
 	}
 
-	const [isOpen, setOpen] = React.useState(false)
-	const { toast } = useToast()
 	return (
 		<Dialog onOpenChange={(open) => setOpen(open)} open={isOpen}>
 			<DialogTrigger asChild>

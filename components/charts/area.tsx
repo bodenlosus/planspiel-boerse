@@ -6,20 +6,22 @@ import {
 } from "@/components/ui/chart"
 import type { NullableRow } from "@/database/custom_types"
 import { to_display_string } from "@/lib/cash_display_string"
-import { relativeTimeString } from "@/lib/date_utils"
+import {
+	relativeDateStringCompact,
+	toAbsoluteTimeString,
+} from "@/lib/date_utils"
 import { cn } from "@/lib/utils"
 import type React from "react"
 import {
 	Area,
 	AreaChart as RechartsAreaChart,
-	ComposedChart,
 	ReferenceLine,
 	type Tooltip,
 	XAxis,
 	YAxis,
 } from "recharts"
-import { WinLossIndicator } from "../stat/indicator"
 import { Separator } from "../ui/separator"
+
 interface props<T extends Record<string, number | string>>
 	extends React.ComponentPropsWithoutRef<"div"> {
 	data: Array<T | NullableRow<T>>
@@ -39,7 +41,6 @@ export default function AreaChart<T extends Record<string, number | string>>({
 	yKey,
 	startValue,
 }: props<T>) {
-
 	const chartConfig = {
 		open: {
 			label: "Open",
@@ -94,7 +95,14 @@ export default function AreaChart<T extends Record<string, number | string>>({
 					</linearGradient>
 				</defs>
 
-				<XAxis className="number" dataKey={xKey} interval={"preserveStart"} />
+				<XAxis
+					className="number"
+					dataKey={xKey}
+					interval={7}
+					tickFormatter={(timestamp) =>
+						relativeDateStringCompact(new Date(timestamp))
+					}
+				/>
 				<YAxis
 					dataKey={yKey}
 					tickFormatter={(value) => to_display_string(value, 2)}
@@ -103,8 +111,9 @@ export default function AreaChart<T extends Record<string, number | string>>({
 					domain={["min", "max"]}
 				/>
 				<ChartTooltip
+					isAnimationActive={false}
 					filterNull
-					content={<CustomTooltip/>}
+					content={<CustomTooltip />}
 				/>
 				<ReferenceLine
 					y={startValue}
@@ -119,7 +128,7 @@ export default function AreaChart<T extends Record<string, number | string>>({
 					data={data}
 					dataKey={dataKey}
 					fillOpacity={1}
-					type="monotone"
+					type="linear"
 					stroke="url(#stroke)"
 					strokeWidth={2}
 					fill="url(#fill)"
@@ -131,27 +140,27 @@ export default function AreaChart<T extends Record<string, number | string>>({
 
 type CustomTooltipProps = React.ComponentProps<typeof Tooltip>
 
-const CustomTooltip = ({
-	active,
-	payload,
-	label,
-}: CustomTooltipProps) => {
+const CustomTooltip = ({ active, payload, label }: CustomTooltipProps) => {
 	if (!active || !payload || !payload.length) {
 		return null
 	}
 
 	const value = Number.parseFloat(payload[0].value?.toString() ?? "")
+	const valueType = payload[0].payload?.type ?? ""
 
 	const displayString = Number.isNaN(value)
 		? "No value"
-		: to_display_string((value as number), 2)
-
+		: to_display_string(value as number, 2)
+	const date = new Date(label)
 	return (
-		<div className="bg-background/70 backdrop-blur-lg p-2 text-sm rounded shadow border">
-			<h1 className="font-semibold">{relativeTimeString(new Date(label))}</h1>
-			<Separator orientation="horizontal" className="mb-2" />
-			<p className="label inline-flex flex-row gap-2 number">
-				<WinLossIndicator sign={Math.sign(value ?? 0)} /> {displayString}
+		<div className="bg-background p-2 text-sm rounded shadow border">
+			<h1 className="">
+				<span className="font-semibold">{toAbsoluteTimeString(date)}</span>
+			</h1>
+			<Separator orientation="horizontal" className="my-2 col-span-2" />
+			<p className="label inline-flex flex-row gap-2">
+				<span className="number">{displayString}</span>
+				<span className="">{valueType}</span>
 			</p>
 		</div>
 	)

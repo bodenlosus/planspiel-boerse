@@ -9,30 +9,44 @@ import {
 	Cell,
 	ComposedChart,
 	ErrorBar,
+	Line,
 	type Tooltip,
 	XAxis,
 	YAxis,
 } from "recharts"
 
+import type { NullableRow } from "@/database/custom_types"
 import { formatFloatingPointString } from "@/lib/data/formatter"
+import { toAbsoluteTimeString } from "@/lib/date_utils"
 import { cn } from "@/lib/utils"
 import type React from "react"
-import toRelativeValues, {
-	toAbsoluteValues,
+import {
 	type TtoRelativeValues,
+	toAbsoluteValues,
 } from "../../lib/data/data_utils"
 import { WinLossIndicator } from "../stat/indicator"
 import { Separator } from "../ui/separator"
-import type { NullableRow } from "@/database/custom_types"
 
-interface props<T extends Record<string, [number, number] | string | boolean>> extends React.ComponentPropsWithoutRef<"div"> {
+type BarDataT = Record<string, [number, number] | string | boolean | number>
+
+interface props<T extends BarDataT>
+	extends React.ComponentPropsWithoutRef<"div"> {
 	data: Array<T | NullableRow<T>>
 	barKey: Extract<keyof T, string>
 	errorKey: Extract<keyof T, string>
 	winKey: Extract<keyof T, string>
 	xKey: Extract<keyof T, string>
+	lineKey: Extract<keyof T, string>
 }
-export default function CandleStickChart<T extends Record<string, [number, number] | string | boolean>>({ data, className, xKey, barKey, errorKey, winKey }: props<T>) {
+export default function CandleStickChart<T extends BarDataT>({
+	data,
+	className,
+	xKey,
+	barKey,
+	errorKey,
+	winKey,
+	lineKey,
+}: props<T>) {
 	const chartData = data //data
 	const chartConfig = {
 		open: {
@@ -61,6 +75,7 @@ export default function CandleStickChart<T extends Record<string, [number, numbe
 						const win = entry[winKey]
 						return (
 							<Cell
+								className="z-10"
 								key={entry[xKey] as string}
 								radius={4}
 								fillOpacity={0.6}
@@ -70,12 +85,22 @@ export default function CandleStickChart<T extends Record<string, [number, numbe
 						)
 					})}
 					<ErrorBar
+						className="-z-10"
 						dataKey={errorKey}
-						width={2}
+						width={0}
 						strokeWidth={2}
 						stroke="hsl(var(--foreground)/.7)"
 					/>
 				</Bar>
+				<Line
+					dot={false}
+					dataKey={lineKey}
+					strokeWidth={1}
+					type="linear"
+					stroke="hsl(var(--muted-foreground))"
+					connectNulls
+					strokeOpacity={0.5}
+				/>
 				<ChartTooltip filterNull content={<CustomTooltip />} />
 			</ComposedChart>
 		</ChartContainer>
@@ -102,10 +127,11 @@ const CustomTooltip = ({ active, payload, label }: CustomToolTipProps) => {
 		{ name: "Low", string: formatFloatingPointString(row.low, 2) },
 	]
 	const profit = row.close - row.open
+	const date = new Date(label)
 	return (
-		<div className="bg-background/60 backdrop-blur-lg p-2 rounded shadow border">
-			<h1 className="font-semibold text-sm">{label}</h1>
-			<Separator orientation="horizontal" className="mb-2" />
+		<div className="bg-background p-2 rounded shadow border">
+			<h1 className="font-semibold text-sm">{toAbsoluteTimeString(date)}</h1>
+			<Separator orientation="horizontal" className="my-2" />
 			<div className="grid grid-cols-4 gap-2">
 				{displayValues.map((value) => (
 					<>

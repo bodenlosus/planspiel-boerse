@@ -16,12 +16,14 @@ import type {
 	StockPrice,
 } from "@/database/custom_types"
 import { to_display_string } from "@/lib/cash_display_string"
+import get_sign from "@/lib/data/get_sign"
 import { cn } from "@/lib/utils"
 import { X } from "lucide-react"
 import type React from "react"
 import type { ComponentPropsWithoutRef } from "react"
-import ChartContainer from "../charts/container"
+import StockChartContainer from "../charts/container"
 import { PositionSheet } from "../sheets/positions"
+import { WinLossIndicator } from "../stat/indicator"
 import BuyStockDialog from "../transaction_dialogs/buy_stock_dialog"
 import SellStockDialog from "../transaction_dialogs/sell_stock_dialog"
 
@@ -40,6 +42,8 @@ export function StatCard({
 	referencePrice,
 	dateString,
 }: StatCardProps) {
+	const absoluteChange = currentPrice.close - currentPrice.open
+	const relativeChange = (absoluteChange / currentPrice.open) * 100
 	return (
 		<Card className={cn(className)}>
 			<CardHeader className="flex-row flex-wrap justify-left gap-x-4 gap-y-1">
@@ -51,7 +55,25 @@ export function StatCard({
 				<Badge className="w-fit">{stock.description}</Badge>
 			</CardHeader>
 			<CardContent className="grid grid-cols-1 gap-3">
+				<div className="flex flex-row gap-3 px-3 pb-3 rounded-md border-border shadow">
+					<div className="text-4xl font-bold flex flex-row gap-2">
+						<WinLossIndicator className="size-6" sign={absoluteChange} />
+						<div>{currentPrice.close.toFixed(2)}</div>
+					</div>
+					<div className="text-2xl font-semibold text-muted-foreground flex flex-row gap-1">
+						<div>
+							{get_sign(absoluteChange)}
+							{absoluteChange.toFixed(2)}
+						</div>
+						<div>
+							{"("}
+							{get_sign(absoluteChange)}
+							{relativeChange.toFixed(2)}%{")"}
+						</div>
+					</div>
+				</div>
 				<StockStats
+					className=""
 					structure={{
 						close: "Close",
 						open: "Open",
@@ -89,7 +111,7 @@ export function ChartCard({ prices, datePicker, className }: ChartCardProps) {
 
 			<CardContent className="grid grid-cols-1 gap-3">
 				{datePicker}
-				<ChartContainer data={prices} />
+				<StockChartContainer data={prices} />
 			</CardContent>
 		</Card>
 	)

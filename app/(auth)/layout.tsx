@@ -4,7 +4,7 @@ import { ThemeProvider } from "@/components/theme-provider"
 import { Toaster } from "@/components/ui/toaster"
 import { cn } from "@/lib/utils"
 import type { Metadata } from "next"
-import { Inter as FontSans } from "next/font/google"
+// import { Lato as FontSans } from "next/font/google"
 import Image from "next/image"
 import type React from "react"
 export const metadata: Metadata = {
@@ -12,10 +12,11 @@ export const metadata: Metadata = {
 	description: "Boersenspiel",
 }
 
-const fontSans = FontSans({
-	subsets: ["latin"],
-	variable: "--font-sans",
-})
+// const fontSans = FontSans({
+// 	weight: "400",
+// 	subsets: ["latin"],
+// 	variable: "--font-sans",
+// })
 
 export default function RootLayout({
 	children,
@@ -29,8 +30,8 @@ export default function RootLayout({
 			</head>
 			<body
 				className={cn(
-					"h-dvh bg-background font-sans antialiased flex flex-col overflow-hidden w-full",
-					fontSans.variable,
+					"h-dvh bg-background font-sans antialiased flex flex-col overflow-hidden w-full bg-gradient-to-bl from-accent via-muted to-background",
+					// fontSans.variable,
 				)}
 			>
 				<ThemeProvider
@@ -39,13 +40,6 @@ export default function RootLayout({
 					enableSystem
 					disableTransitionOnChange
 				>
-					<Image
-						src={"/frosted.png"}
-						alt=""
-						width={1920}
-						height={1080}
-						className="absolute -z-10 aspect-video opacity-70 max-h-nonee max-w-none min-w-full min-h-full"
-					/>
 					<div className="absolute w-[calc(100%-4rem)] left-1/2 -translate-x-1/2 pt-8 pb-8 px-2 flex flex-row items-center gap-4 justify-center flex-wrap overflow-hidden border-b">
 						<Image
 							src={"/logo_unrounded.svg"}

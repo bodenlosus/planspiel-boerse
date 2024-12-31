@@ -16,7 +16,11 @@ export const getTimeBetweenDates = (startDate: Date, endDate: Date) => {
 	return Math.round(diffTime / msPerDay)
 }
 
-export function relativeTimeString(
+export function toAbsoluteTimeString(date: Date) {
+	return date.toLocaleDateString("de")
+}
+
+export function relativeDateString(
 	date: Date,
 	absolute: "necessary" | "never" = "necessary",
 ): string {
@@ -48,4 +52,30 @@ export function relativeTimeString(
 	}
 
 	return `${diff} days ago`
+}
+
+export function relativeDateStringCompact(
+	date: Date,
+	absolute: "necessary" | "never" = "necessary",
+): string {
+	const diff = getTimeBetweenDates(new Date(), date)
+
+	if (diff <= 1) {
+		return "td"
+	}
+
+	if (diff === 2) {
+		return "yd"
+	}
+
+	if (diff < 7) {
+		const days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"]
+		return days[date.getDay()]
+	}
+
+	if (absolute === "necessary" && diff > 30) {
+		return date.toLocaleDateString("de")
+	}
+
+	return `${diff}d`
 }

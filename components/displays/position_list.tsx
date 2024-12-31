@@ -5,6 +5,7 @@ import type React from "react"
 import { WinLossIndicator } from "../stat/indicator"
 import StockStats from "../stat/stats"
 import { Card } from "../ui/card"
+import "./style.css"
 export default function PositionList({
 	positions,
 }: { positions: Array<ReturnT> }) {
@@ -29,20 +30,22 @@ export function PositionRow({
 
 	return (
 		<>
-			<div className="p-4 appearance-none grid grid-cols-subgrid col-span-2 gap-3 border-b">
+			<div className="p-3 grid grid-cols-subgrid col-span-2 gap-3 border-b">
 				<Link
 					href={getStockPagePath(stock.id)}
-					className="text-2xl font-bold col-span-1 flex flex-row gap-2 self-end hover:underline-offset-4 transition-all no-underline underline-offset-[-4ppx] hover:underline decoration-accent-foreground"
+					className="text-2xl ml-3 font-bold col-span-1 flex items-end self-end flex-row gap-2 h-min hover:underline-offset-4 transition-all no-underline underline-offset-[-4ppx] hover:underline decoration-accent-foreground"
 				>
 					<WinLossIndicator sign={Math.sign(profit)} />
 					{stock.symbol}
 				</Link>
-				<div className="w-fit flex flex-col gap-1">
-					<div className="text-muted-foreground">{stock.name}</div>
-					<div className="text-muted-foreground">{stock.description}</div>
+				<div className="w-fit flex flex-row gap-2 flex-wrap items-baseline h-min self-end pb-1">
+					<div className="text-foreground">{stock.name}</div>
+					<div className="text-muted-foreground text-sm hidden md:block">
+						{stock.description}
+					</div>
 				</div>
 				<StockStats
-					className="mx-3 row-span-2 row-start-1 col-start-2 h-fit self-end"
+					className="row-span-1 row-start-2 col-start-1 h-fit self-end grid *:w-auto grid-cols-2 md:grid-cols-4 last:col-end-[-1] gap-0 *:rounded-none rounded-md overflow-hidden shadow"
 					structure={{
 						amount: "You own",
 						value: "Worth",

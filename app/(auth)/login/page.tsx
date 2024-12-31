@@ -7,7 +7,6 @@ import {
 } from "@/components/ui/card"
 
 import LoginForm from "./form"
-
 export default function Page() {
 	return (
 		<main className="grow flex justify-center items-center">

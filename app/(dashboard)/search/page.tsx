@@ -11,10 +11,11 @@ import { StockList } from "./stock_list"
 import { urlSchema } from "./url_scheme"
 
 interface props {
-	searchParams: { query: string }
+	searchParams: Promise<{ query: string }>
 }
 
-export default async function Page({ searchParams }: props) {
+export default async function Page(props0: props) {
+	const searchParams = await props0.searchParams
 	const { data: urlParams, error: parseError } =
 		urlSchema.safeParse(searchParams)
 

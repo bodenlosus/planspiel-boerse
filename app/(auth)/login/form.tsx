@@ -12,24 +12,18 @@ import {
 import { Button } from "@/components/ui/button"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Input } from "@/components/ui/input"
+import { useToast } from "@/hooks/use-toast"
 import { zodResolver } from "@hookform/resolvers/zod"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { useForm } from "react-hook-form"
-import { z } from "zod"
-import { login } from "../actions_client"
-
-const formSchema = z.object({
-	email: z.string().trim().email({ message: "Please provide a valid E-Mail" }),
-	password: z
-		.string()
-		.trim()
-		.min(1, { message: "Please provide a valid password" }),
-	rememberUser: z.boolean(),
-})
+import type { z } from "zod"
+import { login } from "../actions"
+import { formSchema } from "./form_schema"
 
 export default function LoginForm() {
 	const router = useRouter()
+	const toast = useToast()
 	const form = useForm<z.infer<typeof formSchema>>({
 		resolver: zodResolver(formSchema),
 		defaultValues: {
@@ -39,8 +33,26 @@ export default function LoginForm() {
 		},
 	})
 
-	function onSubmit(values: z.infer<typeof formSchema>) {
-		login(values, router.push)
+	async function onSubmit(data: z.infer<typeof formSchema>) {
+		const { error, success } = await login(data.email, data.password)
+
+		if (error) {
+			toast.toast({
+				title: "Failed to log in",
+				variant: "destructive",
+				description: error.message,
+			})
+			return
+		}
+		if (!success) {
+			return
+		}
+
+		toast.toast({
+			title: "Logged in successfully",
+			variant: "default",
+		})
+		router.push("/")
 	}
 
 	return (

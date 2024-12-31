@@ -8,6 +8,7 @@ export interface TtoRelativeValues {
 	high_low: [number, number]
 	open_close: [number, number]
 	date: string
+	absClose: number
 	closeLargerOpen: boolean
 }
 export default function toRelativeValues(
@@ -20,6 +21,7 @@ export default function toRelativeValues(
 				open_close: null,
 				date: price.timestamp,
 				closeLargerOpen: null,
+				absClose: null,
 			}
 		}
 
@@ -34,6 +36,7 @@ export default function toRelativeValues(
 			],
 			date: price.timestamp,
 			closeLargerOpen: price.close > price.open,
+			absClose: price.close,
 		}
 	})
 }
@@ -54,17 +57,31 @@ export function toAbsoluteValues({
 export function flattenOpenClose(
 	rawData: Array<CleanedStockPrice | NullableRow<StockPrice>>,
 ) {
-	const data = rawData.flatMap((entry) => {
-		// if (!entry.close || !entry.open) {
-		// 	return [
-		// 		{date: entry.timestamp, value: 1, ax: 1}, 
-		// 		{date: entry.timestamp, value: 1, ax: 1}]
-		// }
-		return [
-			{ date: entry.timestamp, value: entry.open, ax: entry.open },
-			{ date: entry.timestamp, value: entry.close, ax: entry.close },
-		]
-	})
+	const data = []
+	for (const index in rawData) {
+		const entry = rawData[index]
+
+		if (!entry.close || !entry.open) {
+			data.push({ date: entry.timestamp, value: null, ax: null, type: null })
+			data.push({ date: entry.timestamp, value: null, ax: null, type: null })
+			continue
+		}
+
+		data.push(
+			{
+				date: entry.timestamp,
+				value: entry.open,
+				ax: entry.open,
+				type: "open",
+			},
+			{
+				date: entry.timestamp,
+				value: entry.close,
+				ax: entry.close,
+				type: "close",
+			},
+		)
+	}
 	return data
 }
 

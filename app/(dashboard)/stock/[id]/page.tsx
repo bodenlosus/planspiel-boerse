@@ -1,5 +1,3 @@
-"use server"
-
 import {
 	ChartCard,
 	ErrorCard,
@@ -22,21 +20,22 @@ import { getUser } from "@/database/get_user_server"
 import { formatter as formatPrices } from "@/lib/data/formatter"
 import type { User } from "@supabase/supabase-js"
 import { redirect } from "next/navigation"
+import { cache } from "react"
 import { IntervallContainer } from "./pick_intervall"
 import { urlSchema } from "./url_scheme"
 
+export const revalidate = 3600
 // export async function generateStaticParams() {
 //   const ids = await fetchStockIds() // Fetch the array of IDs (1000+ IDs)
 //   return ids.slice(0, 10).map(id => ({ id })) // Statically generate only the first 10
 // }
 
-export default async function Page({
-	params,
-	searchParams,
-}: {
-	params: { id: string }
-	searchParams: { start: string }
+export default async function Page(props: {
+	params: Promise<{ id: string }>
+	searchParams: Promise<{ start: string }>
 }) {
+	const searchParams = await props.searchParams
+	const params = await props.params
 	const { data: urlParams, error: parseError } = urlSchema({
 		start: toISODateOnly(getDateOneWeekAgo()),
 		end: toISODateOnly(getCurrentDate()),
@@ -85,7 +84,7 @@ export default async function Page({
 			<StockPositionCard
 				hidden={!depot}
 				depot={depot}
-				position={(positions)[0]}
+				position={positions[0]}
 				className="md:col-span-1 row-span-1 col-span-3"
 				stock={{
 					name: info[0].name as string,
@@ -112,7 +111,9 @@ export default async function Page({
 	)
 }
 
-async function dataFetcher(user: User, stockId: number) {
+// const dataFetcherUncached = async (user: User, stockId: number) => {}
+
+const dataFetcher = cache(async (user: User, stockId: number) => {
 	const depotResponse = await fetchRpc("get_depots_of_user", {
 		user_id: user.id,
 	})
@@ -151,4 +152,4 @@ async function dataFetcher(user: User, stockId: number) {
 		error: null,
 		positions: positionResponse.data,
 	}
-}
+})

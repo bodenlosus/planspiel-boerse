@@ -1,19 +1,15 @@
 "use client"
 
-import {
-	CandlestickChart,
-	HomeIcon,
-	SearchIcon,
-	Settings2,
-	User,
-} from "lucide-react"
+import { CandlestickChart, HomeIcon, SearchIcon, Settings2 } from "lucide-react"
 
+import { logout } from "@/app/(auth)/actions"
 import { Button } from "@/components/ui/button"
 import { Separator } from "@/components/ui/separator"
 import { cn } from "@/lib/utils"
 import Image from "next/image"
 import { SearchBarPopOut } from "../search_bar"
 import { NavBarPageButton } from "./page_button"
+import { UserProfile, UserProfileFull } from "./profile"
 
 interface props {
 	className: string
@@ -82,6 +78,12 @@ export default function DesktopNavigation({ className }: props) {
 					}}
 				/>
 				<div className="grow" />
+				<UserProfileFull
+					methods={{ logout: logout }}
+					className="ml-1 hidden lg:block"
+				/>
+				<UserProfile methods={{ logout: logout }} className="lg:hidden" />
+				<div className="" />
 				<NavBarPageButton
 					usePath
 					title="Settings"
@@ -91,13 +93,6 @@ export default function DesktopNavigation({ className }: props) {
 						render: (props) => <Settings2 {...props} />,
 						className: "size-6",
 					}}
-				/>
-				<NavBarPageButton
-					usePath
-					title="User"
-					link="/user"
-					autoCompact
-					icon={{ render: (props) => <User {...props} />, className: "size-6" }}
 				/>
 			</nav>
 			<div className="ml-10 mr-2">{/* <ModeToggle></ModeToggle> */}</div>

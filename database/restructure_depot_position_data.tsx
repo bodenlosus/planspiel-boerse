@@ -27,7 +27,7 @@ export function restructure(data: dataT): Array<ReturnT> {
 					timestamp: row.timestamp,
 					volume: row.volume,
 					price_id: row.price_id,
-					stock_id: row.stock_id,
+					stock_id: row.stockid,
 				},
 			],
 			position: {
@@ -37,7 +37,7 @@ export function restructure(data: dataT): Array<ReturnT> {
 				id: row.id,
 				expenses: row.expenses,
 				profit: row.profit,
-				stock_id: row.stock_id,
+				stock_id: row.stockid,
 			},
 		}
 		if (restrucData.has(row.id)) {

@@ -12,47 +12,18 @@ import {
 import { Button } from "@/components/ui/button"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Input } from "@/components/ui/input"
+import { useToast } from "@/hooks/use-toast"
 import { zodResolver } from "@hookform/resolvers/zod"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { useForm } from "react-hook-form"
-import { z } from "zod"
-import { signup } from "../actions_client"
-
-const formSchema = z
-	.object({
-		fullName: z
-			.string({ message: "Please provide your full name" })
-			.trim()
-			.regex(/^[\w\s]*$/, { message: "Can only include letters and numbers." })
-			.min(1)
-			.max(100),
-		email: z.string().trim().email({
-			message: "Please provide a valid E-Mail",
-		}),
-		password: z
-			.string()
-			.trim()
-			.min(8, { message: "Please provide a valid password" }),
-		confirmPassword: z
-			.string()
-			.trim()
-			.min(8, { message: "Please provide a valid password" }),
-		termsAccepted: z.boolean({ message: "" }),
-	})
-	.superRefine(({ password, confirmPassword }, ctx) => {
-		if (password === confirmPassword) {
-			return
-		}
-		ctx.addIssue({
-			code: "custom",
-			message: "Passwords do not match",
-			path: ["confirmPassword"],
-		})
-	})
+import type { z } from "zod"
+import { signup } from "../actions"
+import { formSchema } from "./form_schema"
 
 export default function SignUpForm() {
 	const router = useRouter()
+	const toast = useToast()
 	const form = useForm<z.infer<typeof formSchema>>({
 		resolver: zodResolver(formSchema),
 		defaultValues: {
@@ -63,8 +34,32 @@ export default function SignUpForm() {
 		},
 	})
 
-	function onSubmit(values: z.infer<typeof formSchema>) {
-		signup(router.push, values)
+	async function onSubmit(data: z.infer<typeof formSchema>) {
+		const { error, success } = await signup(
+			data.fullName,
+			data.email,
+			data.password,
+		)
+
+		if (error) {
+			toast.toast({
+				title: "Failed to log in",
+				variant: "destructive",
+				description: error.message,
+			})
+			return
+		}
+		if (!success) {
+			return
+		}
+
+		toast.toast({
+			description: `A verification email has been sent to ${data.email}`,
+			title: "Signed up successfully",
+			variant: "default",
+		})
+		router.refresh()
+		router.push("/")
 	}
 
 	return (

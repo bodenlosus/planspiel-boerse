@@ -1,3 +1,4 @@
+import { logout } from "@/app/(auth)/actions"
 import { ModeToggle } from "@/components/navbar/mode_toggle"
 import { UserProfile } from "@/components/navbar/profile"
 import { cn } from "@/lib/utils"
@@ -26,7 +27,11 @@ export default function Page() {
 					<div className={cn("size-24 rounded-lg", color)} key={color} />
 				))}
 			</div>
-			<UserProfile />
+			<UserProfile
+				methods={{
+					logout: logout,
+				}}
+			/>
 		</main>
 	)
 }

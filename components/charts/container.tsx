@@ -5,22 +5,34 @@ import {
 	LineChart as LinechartIcon,
 } from "lucide-react"
 
-import toRelativeValues, { calculateOffset, flattenOpenClose } from "@/lib/data/data_utils"
-import type React from "react"
+import toRelativeValues, {
+	calculateOffset,
+	flattenOpenClose,
+} from "@/lib/data/data_utils"
+
+import type {
+	CleanedStockPrice,
+	NullableRow,
+	StockPrice,
+} from "@/database/custom_types"
+import { type ComponentPropsWithoutRef, useMemo } from "react"
+import AreaChart from "./area"
 import CandleStickChart from "./candle_stick"
-import type { props as ChartProps } from "./chart_props"
-import { ChartContainer as CContainer, Chart, ChartIcon } from "./container2"
-import AreaChart from "./value_area"
+import Chart from "./primitive/chart"
+import ChartIcon from "./primitive/chart_icon"
+import ChartContainer from "./primitive/container"
 
-interface props extends ChartProps, React.ComponentPropsWithoutRef<"div"> {}
-
-export default function ChartContainer({ data }: props) {
-	const areaData = flattenOpenClose(data)
-	const area = calculateOffset(areaData, "value")
+export interface props extends ComponentPropsWithoutRef<"div"> {
+	data: Array<CleanedStockPrice | NullableRow<StockPrice>>
+	timeframe?: { start: string; end: string }
+}
+export default function StockChartContainer({ data }: props) {
+	const areaData = useMemo(() => flattenOpenClose(data), [data])
+	const area = useMemo(() => calculateOffset(areaData, "value"), [areaData])
 
 	const candleData = toRelativeValues(data)
 	return (
-		<CContainer
+		<ChartContainer
 			defaultName="line"
 			className="w-full border rounded-md bg-muted/50 shadow overflow-hidden"
 		>
@@ -31,7 +43,8 @@ export default function ChartContainer({ data }: props) {
 					xKey="date"
 					barKey="open_close"
 					errorKey="high_low"
-                    winKey="closeLargerOpen"                   
+					winKey="closeLargerOpen"
+					lineKey="absClose"
 				/>
 			</Chart>
 			<Chart name="line">
@@ -51,6 +64,6 @@ export default function ChartContainer({ data }: props) {
 			<ChartIcon name="line">
 				<LinechartIcon className="size-7 md:size-5 stroke-muted-foreground" />
 			</ChartIcon>
-		</CContainer>
+		</ChartContainer>
 	)
 }
