@@ -4,7 +4,7 @@ import "./layout.css"
 import { IBM_Plex_Mono as FontMono, Inter as FontSans } from "next/font/google"
 
 import PageLoader from "@/components/loaders/page_loader"
-import DesktopNavigation from "@/components/navbar/desktop_navigation"
+import DesktopNavigation from "@/components/navbar/desktop/desktop_navigation"
 import MobileNavigation from "@/components/navbar/mobile_navigation"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { Toaster } from "@/components/ui/toaster"

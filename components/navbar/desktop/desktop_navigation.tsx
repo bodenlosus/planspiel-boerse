@@ -7,9 +7,9 @@ import { Button } from "@/components/ui/button"
 import { Separator } from "@/components/ui/separator"
 import { cn } from "@/lib/utils"
 import Image from "next/image"
-import { SearchBarPopOut } from "../search_bar"
-import { NavBarPageButton } from "./page_button"
-import { UserProfile, UserProfileFull } from "./profile"
+import { SearchBarPopOut } from "../../search_bar"
+import { NavBarPageButton } from "../page_button"
+import { UserProfile, UserProfileFull } from "../profile"
 
 interface props {
 	className: string
