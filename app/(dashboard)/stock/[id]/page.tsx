@@ -49,7 +49,7 @@ export default async function Page(props: {
 		return <ErrorCard error={parseError} />
 	}
 
-	const { depots, error, positions } = await dataFetcher(user, urlParams.id)
+	const { depots, error, positions } = await dataFetcher(urlParams.id)
 	const depot = depots ? depots[0] : null
 
 	const { info, prices } = await fetchStockData(urlParams)
