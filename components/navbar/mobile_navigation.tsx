@@ -11,7 +11,7 @@ interface props {
 }
 
 export default function MobileNavigation({ className }: props) {
-	return (
+	return(
 		<nav
 			className={cn(
 				"border-b top-0 w-full h-fit items-baseline px-4 py-1 flex flex-row gap-4 border bg-background shadow-md  justify-between",

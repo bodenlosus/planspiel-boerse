@@ -48,11 +48,6 @@ export default async function Page(props: {
 	if (parseError) {
 		return <ErrorCard error={parseError} />
 	}
-	const user = await getUser()
-
-	if (!user) {
-		redirect("/auth/login")
-	}
 
 	const { depots, error, positions } = await dataFetcher(user, urlParams.id)
 	const depot = depots ? depots[0] : null
@@ -73,7 +68,7 @@ export default async function Page(props: {
 	const endDate = getCurrentDate()
 
 	return (
-		<main className="w-full h-full overflow-hidden grid sm:grid-cols-2 md:grid-cols-3 gap-5">
+		<main className="w-full h-full overflow-hidden grid sm:grid-cols-2 md:grid-cols-[repeat(3,fit-content)] gap-5">
 			<StatCard
 				className="col-span-3 md:col-span-2"
 				currentPrice={prices.at(-1) ?? prices[0]}
@@ -113,7 +108,12 @@ export default async function Page(props: {
 
 // const dataFetcherUncached = async (user: User, stockId: number) => {}
 
-const dataFetcher = cache(async (user: User, stockId: number) => {
+const dataFetcher = cache(async (stockId: number) => {
+	const user = await getUser()
+
+	if (!user) {
+		redirect("/auth/login")
+	}
 	const depotResponse = await fetchRpc("get_depots_of_user", {
 		user_id: user.id,
 	})

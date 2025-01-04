@@ -26,6 +26,9 @@ import { PositionSheet } from "../sheets/positions"
 import { WinLossIndicator } from "../stat/indicator"
 import BuyStockDialog from "../transaction_dialogs/buy_stock_dialog"
 import SellStockDialog from "../transaction_dialogs/sell_stock_dialog"
+import HeaderStat from "../stat/header_stat"
+import AdditionalContent from "../additional_display"
+import { toAbsoluteTimeString } from "@/lib/date_utils"
 
 type CardProps = ComponentPropsWithoutRef<"div">
 
@@ -42,8 +45,10 @@ export function StatCard({
 	referencePrice,
 	dateString,
 }: StatCardProps) {
+	const change24h = currentPrice.close - (referencePrice?.close ?? 0)
 	const absoluteChange = currentPrice.close - currentPrice.open
 	const relativeChange = (absoluteChange / currentPrice.open) * 100
+
 	return (
 		<Card className={cn(className)}>
 			<CardHeader className="flex-row flex-wrap justify-left gap-x-4 gap-y-1">
@@ -54,26 +59,16 @@ export function StatCard({
 				<h1>{stock.name}</h1>
 				<Badge className="w-fit">{stock.description}</Badge>
 			</CardHeader>
-			<CardContent className="grid grid-cols-1 gap-3">
-				<div className="flex flex-row gap-3 px-3 pb-3 rounded-md border-border shadow">
-					<div className="text-4xl font-bold flex flex-row gap-2">
-						<WinLossIndicator className="size-6" sign={absoluteChange} />
-						<div>{currentPrice.close.toFixed(2)}</div>
-					</div>
-					<div className="text-2xl font-semibold text-muted-foreground flex flex-row gap-1">
-						<div>
-							{get_sign(absoluteChange)}
-							{absoluteChange.toFixed(2)}
-						</div>
-						<div>
-							{"("}
-							{get_sign(absoluteChange)}
-							{relativeChange.toFixed(2)}%{")"}
-						</div>
-					</div>
-				</div>
+			<CardContent className="flex flex-col gap-3 pb-0 h-auto">
+				<HeaderStat subClassName="text-sm" className="text-base gap-1 px-3" headerClassName="text-3xl font-bold" displays={{
+					"Änderung 24h": change24h,
+					"Änderung Heute": absoluteChange,
+					"Änderung in %": relativeChange,
+				}}/>
+				<div className="grow"/>
+				<AdditionalContent className="bg-card" buttonTitle="mehr Information ...">
 				<StockStats
-					className=""
+					className="pt-3"
 					structure={{
 						close: "Close",
 						open: "Open",
@@ -84,9 +79,11 @@ export function StatCard({
 					current={currentPrice}
 					reference={referencePrice}
 				/>
-				<CardFooter className="h-min p-0">
-					<span className="text-sm w-full text-right text-muted-foreground">
-						{dateString ?? ""}
+				</AdditionalContent>
+				
+				<CardFooter className="h-min pb-3 px-2">
+					<span className="text-sm w-full text-muted-foreground">
+						Stand des {dateString ?? toAbsoluteTimeString(new Date(currentPrice.timestamp))}
 					</span>
 				</CardFooter>
 			</CardContent>
@@ -165,8 +162,8 @@ export function StockPositionCard({
 			<CardHeader className="flex-row flex-wrap justify-left gap-x-4 gap-y-1">
 				<CardDescription className="">Your Positions</CardDescription>
 			</CardHeader>
-			<CardContent className="">
-				<div className="flex flex-row flex-wrap gap-3 w-full *:flex-grow mb-3">
+			<CardContent className="flex flex-col gap-3 ">
+				<div className="flex flex-row flex-wrap gap-3 w-full *:flex-grow mb-3 h-fit">
 					<div className="px-4 py-2 flex flex-col flex-nowrap bg-background border border-border/20 rounded shadow-sm">
 						<span className="text-sm text-muted-foreground">You own</span>
 
@@ -182,18 +179,13 @@ export function StockPositionCard({
 						<span className="text-sm flex flex-row items-baseline gap-1 text-muted-foreground">
 							<span className="text-2xl font-mono font-normal text-foreground">
 								{position
-									? to_display_string(position.amount * stock.price, 2)
+									? to_display_string(position.amount * stock.price)
 									: 0}
 							</span>
 						</span>
 					</div>
 				</div>
-				<PositionSheet
-					depotID={depot.id}
-					stockID={stock.id}
-					className="mb-4 w-full"
-				/>
-				<div className="grid grid-cols-2 gap-3">
+				<div className="grid grid-cols-2 gap-3 grow">
 					<BuyStockDialog
 						stock={stock}
 						depot={{ id: depot.id, monetaryAssets: depot.liquid_assets }}

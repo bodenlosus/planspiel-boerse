@@ -57,7 +57,7 @@ function DiplayWithoutReference({ current }: DiplayWithoutReferenceT) {
 		<span className="flex flex-row gap-x-2 gap-y-0 flex-wrap">
 			<span className="flex flex-row gap-1">
 				<span className="text-xl font-semibold number">
-					{to_display_string(current, 2)}
+					{to_display_string(current)}
 				</span>
 			</span>
 		</span>
@@ -83,7 +83,7 @@ function DiplayWithReference({
 				</span>
 
 				<span className="text-xl font-semibold number">
-					{to_display_string(current, 2)}
+					{to_display_string(current)}
 				</span>
 			</span>
 			<span className="text-sm font-semibold text-muted-foreground number float-right">
@@ -114,7 +114,7 @@ function DiplayWithReferences<T extends Array<number>>({
 				</span>
 
 				<span className="text-xl font-semibold number">
-					{to_display_string(current, 2)}
+					{to_display_string(current)}
 				</span>
 			</span>
 			<span className="flex flex-row gap-1 text-sm flex-wrap">

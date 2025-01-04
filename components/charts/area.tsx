@@ -16,6 +16,7 @@ import {
 	Area,
 	AreaChart as RechartsAreaChart,
 	ReferenceLine,
+	ResponsiveContainer,
 	type Tooltip,
 	XAxis,
 	YAxis,
@@ -51,9 +52,7 @@ export default function AreaChart<T extends Record<string, number | string>>({
 	} satisfies ChartConfig
 
 	return (
-		<ChartContainer
-			className={cn("min-h[200px]", className)}
-			config={chartConfig}
+		<ChartContainer config={chartConfig} className={cn("min-h[200px]", className)}
 		>
 			<RechartsAreaChart accessibilityLayer data={data}>
 				<defs>
@@ -105,7 +104,7 @@ export default function AreaChart<T extends Record<string, number | string>>({
 				/>
 				<YAxis
 					dataKey={yKey}
-					tickFormatter={(value) => to_display_string(value, 2)}
+					tickFormatter={(value) => to_display_string(value)}
 					className="number"
 					padding={{ top: 15, bottom: 15 }}
 					domain={["min", "max"]}
@@ -150,8 +149,9 @@ const CustomTooltip = ({ active, payload, label }: CustomTooltipProps) => {
 
 	const displayString = Number.isNaN(value)
 		? "No value"
-		: to_display_string(value as number, 2)
+		: to_display_string(value as number)
 	const date = new Date(label)
+
 	return (
 		<div className="bg-background p-2 text-sm rounded shadow border">
 			<h1 className="">

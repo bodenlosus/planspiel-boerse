@@ -43,7 +43,8 @@ export function UserProfile({ className, methods }: UserProfileProps) {
 			setUser(u)
 		}
 		getUser().catch(() => {})
-	})
+	}, [supabase])
+
 	return (
 		<>
 			<div>
@@ -80,7 +81,7 @@ export function UserProfileFull({ className, methods }: UserProfileProps) {
 			setUser(u)
 		}
 		getUser().catch(() => {})
-	})
+	}, [supabase])
 	return (
 		<>
 			<div className={className}>

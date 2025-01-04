@@ -30,6 +30,8 @@ export default function StockChartContainer({ data }: props) {
 	const areaData = useMemo(() => flattenOpenClose(data), [data])
 	const area = useMemo(() => calculateOffset(areaData, "value"), [areaData])
 
+	const area2 = useMemo(() => calculateOffset(data, "close"), [data])
+
 	const candleData = toRelativeValues(data)
 	return (
 		<ChartContainer
@@ -58,10 +60,24 @@ export default function StockChartContainer({ data }: props) {
 					startValue={area.startValue}
 				/>
 			</Chart>
+			<Chart name="line2">
+				<AreaChart
+					className="aspect-[4/3] md:aspect-[20/9] lg:aspect-[6/2] xl:aspect-[8/2]"
+					data={data}
+					dataKey="close"
+					xKey="timestamp"
+					yKey="close"
+					offset={area2.offset}
+					startValue={area2.startValue}
+				/>
+			</Chart>
 			<ChartIcon name="candlestick">
 				<CandleStickIcon className="size-7 md:size-5 stroke-muted-foreground" />
 			</ChartIcon>
 			<ChartIcon name="line">
+				<LinechartIcon className="size-7 md:size-5 stroke-muted-foreground" />
+			</ChartIcon>
+			<ChartIcon name="line2">
 				<LinechartIcon className="size-7 md:size-5 stroke-muted-foreground" />
 			</ChartIcon>
 		</ChartContainer>

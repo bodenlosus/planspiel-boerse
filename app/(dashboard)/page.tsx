@@ -20,30 +20,44 @@ import {
 import { LineChart as LinechartIcon } from "lucide-react"
 import { redirect } from "next/navigation"
 import { cache } from "react"
+import { relativeChange } from "@/lib/data/change"
+import get_sign from "@/lib/data/get_sign"
+import { WinLossIndicator } from "@/components/stat/indicator"
+import WinLossDisplay from "@/components/stat/simple_stat"
+import type { DepotValue } from "@/database/custom_types"
+import HeaderStat from "@/components/stat/header_stat"
 // export const revalidate = 3600
 export default async function Page() {
-	const { depots: _, positions, depotValues, error } = await dataFetcher()
+	const { positions, depotValues, error } = await dataFetcher()
 	if (error) {
 		return <ErrorCard error={error} />
 	}
 
-	const today = depotValues[0]
-	const yesterday = depotValues[1]
+	
 
-	const profit =
-		today.stock_assets +
-		today.liquid_assets -
-		yesterday.stock_assets -
-		yesterday.liquid_assets
+	const areaData = []
 
-	const { startValue, offset } = calculateOffset(depotValues, "stock_assets")
+	for (const value of depotValues) {
+		areaData.push({
+			totalAssets: value.stock_assets + value.liquid_assets,
+			timestamp: value.timestamp,
+		})
+	}
+
+	const { startValue, offset } = calculateOffset(areaData, "totalAssets")
+
+	const {today, start} = calculateProfits(depotValues)
 
 	return (
 		<main className="grid grid-cols-1 gap-3">
 			<Card className="overflow-hidden">
 				<CardHeader>
-					<CardTitle className="text-2xl font-extrabold">
-						{to_display_string(profit, 2)}
+				<CardTitle>
+					<HeaderStat displays={{
+						"Depotwert": today.value,
+						"Heutiger Profit": today.profit,
+						"Gesamter Profit": start.profit,
+					}}/>
 					</CardTitle>
 				</CardHeader>
 				<CardContent className="m-0 px-0 pb-0">
@@ -53,10 +67,10 @@ export default async function Page() {
 								className="aspect-[4/3] md:aspect-[20/9] lg:aspect-[6/2] xl:aspect-[8/2]"
 								startValue={startValue}
 								offset={offset}
-								data={depotValues}
-								dataKey="stock_assets"
+								data={areaData}
+								dataKey="totalAssets"
 								xKey="timestamp"
-								yKey="stock_assets"
+								yKey="totalAssets"
 							/>
 						</Chart>
 						<ChartIcon name="line">
@@ -143,3 +157,31 @@ const dataFetcher = cache(async () => {
 		depotValues: valueResponse.data,
 	}
 })
+
+function calculateProfits(depotValues: Omit<DepotValue, "id" | "depot_id">[]){
+	const today = depotValues.at(-1) ?? depotValues[0]
+	const yesterday = depotValues.at(-2) ?? depotValues[0]
+	const start = depotValues[0]
+
+	const valueToday = today.stock_assets + today.liquid_assets
+	const valueYesterday = yesterday.stock_assets + yesterday.liquid_assets
+	const valueStart = start.stock_assets + start.liquid_assets
+
+	const profitToday = valueToday - valueYesterday
+
+	const profitAllTime = valueToday - valueStart
+
+	return {today: {
+		value: valueToday,
+		profit: profitToday,
+		row: today
+	}
+    , start: {
+        value: valueToday,
+        profit: profitAllTime,
+        row: start
+    }, yesterday: {
+		value: valueYesterday,
+		row: yesterday
+	}}
+}

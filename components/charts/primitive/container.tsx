@@ -6,6 +6,7 @@ import React, { Suspense } from "react"
 import PageLoader from "../../loaders/page_loader"
 import Chart from "./chart"
 import ChartIcon from "./chart_icon"
+import { cn } from "@/lib/utils"
 
 interface ChartContainerT extends React.ComponentPropsWithoutRef<"div"> {
 	defaultName?: string
@@ -47,7 +48,7 @@ export default function ChartContainer({
 
 	return (
 		<Suspense fallback={<PageLoader />}>
-			<Tabs defaultValue={defaultName} className={className}>
+			<Tabs defaultValue={defaultName} className={cn(className)}>
 				{tabsContent}
 				<div className="w-full h-fit p-2 bg-background border-t md:p-0">
 					<TabsList className="bg-transparent flex flex-row gap-2 justify-around justify-items-stretch md:justify-start">
