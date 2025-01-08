@@ -16,19 +16,16 @@ import type {
 	StockPrice,
 } from "@/database/custom_types"
 import { to_display_string } from "@/lib/cash_display_string"
-import get_sign from "@/lib/data/get_sign"
+import { toAbsoluteTimeString } from "@/lib/date_utils"
 import { cn } from "@/lib/utils"
 import { X } from "lucide-react"
 import type React from "react"
 import type { ComponentPropsWithoutRef } from "react"
+import AdditionalContent from "../additional_display"
 import StockChartContainer from "../charts/container"
-import { PositionSheet } from "../sheets/positions"
-import { WinLossIndicator } from "../stat/indicator"
+import HeaderStat from "../stat/header_stat"
 import BuyStockDialog from "../transaction_dialogs/buy_stock_dialog"
 import SellStockDialog from "../transaction_dialogs/sell_stock_dialog"
-import HeaderStat from "../stat/header_stat"
-import AdditionalContent from "../additional_display"
-import { toAbsoluteTimeString } from "@/lib/date_utils"
 
 type CardProps = ComponentPropsWithoutRef<"div">
 
@@ -60,30 +57,40 @@ export function StatCard({
 				<Badge className="w-fit">{stock.description}</Badge>
 			</CardHeader>
 			<CardContent className="flex flex-col gap-3 pb-0 h-auto">
-				<HeaderStat subClassName="text-sm" className="text-base gap-1 px-3" headerClassName="text-3xl font-bold" displays={{
-					"Änderung 24h": change24h,
-					"Änderung Heute": absoluteChange,
-					"Änderung in %": relativeChange,
-				}}/>
-				<div className="grow"/>
-				<AdditionalContent className="bg-card" buttonTitle="mehr Information ...">
-				<StockStats
-					className="pt-3"
-					structure={{
-						close: "Close",
-						open: "Open",
-						high: "High",
-						low: "Low",
-						volume: "Volume",
+				<HeaderStat
+					subClassName="text-sm"
+					className="text-base gap-1 px-3"
+					headerClassName="text-3xl font-bold"
+					displays={{
+						"Änderung 24h": change24h,
+						"Änderung Heute": absoluteChange,
+						"Änderung in %": relativeChange,
 					}}
-					current={currentPrice}
-					reference={referencePrice}
 				/>
+				<div className="grow" />
+				<AdditionalContent
+					className="bg-card"
+					buttonTitle="mehr Information ..."
+				>
+					<StockStats
+						className="pt-3"
+						structure={{
+							close: "Close",
+							open: "Open",
+							high: "High",
+							low: "Low",
+							volume: "Volume",
+						}}
+						current={currentPrice}
+						reference={referencePrice}
+					/>
 				</AdditionalContent>
-				
+
 				<CardFooter className="h-min pb-3 px-2">
 					<span className="text-sm w-full text-muted-foreground">
-						Stand des {dateString ?? toAbsoluteTimeString(new Date(currentPrice.timestamp))}
+						Stand des{" "}
+						{dateString ??
+							toAbsoluteTimeString(new Date(currentPrice.timestamp))}
 					</span>
 				</CardFooter>
 			</CardContent>

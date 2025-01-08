@@ -20,6 +20,7 @@ export type NullableRow<T> = {
 export type CleanedStockPrice = NonNullableRow<StockPrice>
 export type CleanedStock = NonNullableRow<Stock>
 
-export type StockPosition = Database["depots"]["Tables"]["DepotPositions"]["Row"]
+export type StockPosition =
+	Database["depots"]["Tables"]["DepotPositions"]["Row"]
 export type DepotValue = Database["depots"]["Tables"]["DepotValues"]["Row"]
 export type Depot = Database["depots"]["Tables"]["Depots"]["Row"]

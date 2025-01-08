@@ -2,11 +2,11 @@ import "../container.css"
 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 
+import { cn } from "@/lib/utils"
 import React, { Suspense } from "react"
 import PageLoader from "../../loaders/page_loader"
 import Chart from "./chart"
 import ChartIcon from "./chart_icon"
-import { cn } from "@/lib/utils"
 
 interface ChartContainerT extends React.ComponentPropsWithoutRef<"div"> {
 	defaultName?: string

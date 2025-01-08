@@ -27,12 +27,12 @@ export function to_display_string(
 		if (biggest_divisor < divisor && money_amount >= divisor) {
 			biggest_divisor = divisor
 			biggest_short = short
-			
 		}
 	}
 
 	display_string = `${
-		(Math.round((money_amount / biggest_divisor) * pre_round_fac) / pre_round_fac) *
+		(Math.round((money_amount / biggest_divisor) * pre_round_fac) /
+			pre_round_fac) *
 		sign
 	}${biggest_short}`
 

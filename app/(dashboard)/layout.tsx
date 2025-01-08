@@ -4,9 +4,9 @@ import "./layout.css"
 import { IBM_Plex_Mono as FontMono, Inter as FontSans } from "next/font/google"
 
 import PageLoader from "@/components/loaders/page_loader"
-import DesktopNavigation from "@/components/navbar/desktop/desktop_navigation"
-import MobileNavigation from "@/components/navbar/mobile_navigation"
+import { AppSidebar } from "@/components/navbar/desktop/sidebar"
 import { ScrollArea } from "@/components/ui/scroll-area"
+import { SidebarProvider } from "@/components/ui/sidebar"
 import { Toaster } from "@/components/ui/toaster"
 import { cn } from "@/lib/utils"
 import type { Metadata } from "next"
@@ -47,23 +47,20 @@ export default function DashboardLayout({
 
 			<body
 				className={cn(
-					"h-dvh font-sans antialiased overflow-hidden flex flex-col md:flex-row iceberg colors-vivid",
+					"h-dvh font-sans antialiased overflow-hidden flex flex-col md:flex-row iceberg colors-vivid dark",
 					fontSans.variable,
 					fontMono.variable,
 				)}
 			>
-				<DesktopNavigation className="hidden md:flex" />
-				<MobileNavigation className="md:hidden" />
-				<div
-					className={cn(
-						"grow h-auto bg-muted/40 pt-4 pl-4 md:m-2 md:border md:rounded-2xl",
-						"md:mr-0 md:ml-0 md:my-4",
-					)}
-				>
+				<SidebarProvider>
+					<AppSidebar />
+					{/* <SidebarTrigger /> */}
 					<Suspense fallback={<PageLoader />}>
-						<ScrollArea className="h-full pr-3 mr-1 ">{children}</ScrollArea>
+						<ScrollArea className="h-full pt-3 px-3 mx-2 mt-2 w-full">
+							{children}
+						</ScrollArea>
 					</Suspense>
-				</div>
+				</SidebarProvider>
 				<Toaster />
 			</body>
 		</html>

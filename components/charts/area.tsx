@@ -16,7 +16,6 @@ import {
 	Area,
 	AreaChart as RechartsAreaChart,
 	ReferenceLine,
-	ResponsiveContainer,
 	type Tooltip,
 	XAxis,
 	YAxis,
@@ -52,7 +51,9 @@ export default function AreaChart<T extends Record<string, number | string>>({
 	} satisfies ChartConfig
 
 	return (
-		<ChartContainer config={chartConfig} className={cn("min-h[200px]", className)}
+		<ChartContainer
+			config={chartConfig}
+			className={cn("min-h[200px]", className)}
 		>
 			<RechartsAreaChart accessibilityLayer data={data}>
 				<defs>

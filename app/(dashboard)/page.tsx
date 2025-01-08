@@ -6,11 +6,12 @@ import ChartContainer from "@/components/charts/primitive/container"
 
 import AreaChart from "@/components/charts/area"
 import PositionList from "@/components/displays/position_list"
+import HeaderStat from "@/components/stat/header_stat"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import type { DepotValue } from "@/database/custom_types"
 import { fetchRpc } from "@/database/fetch_rpc"
 import { getUser } from "@/database/get_user_server"
 import { restructure } from "@/database/restructure_depot_position_data"
-import { to_display_string } from "@/lib/cash_display_string"
 import { calculateOffset } from "@/lib/data/data_utils"
 import {
 	getCurrentDate,
@@ -20,20 +21,12 @@ import {
 import { LineChart as LinechartIcon } from "lucide-react"
 import { redirect } from "next/navigation"
 import { cache } from "react"
-import { relativeChange } from "@/lib/data/change"
-import get_sign from "@/lib/data/get_sign"
-import { WinLossIndicator } from "@/components/stat/indicator"
-import WinLossDisplay from "@/components/stat/simple_stat"
-import type { DepotValue } from "@/database/custom_types"
-import HeaderStat from "@/components/stat/header_stat"
 // export const revalidate = 3600
 export default async function Page() {
 	const { positions, depotValues, error } = await dataFetcher()
 	if (error) {
 		return <ErrorCard error={error} />
 	}
-
-	
 
 	const areaData = []
 
@@ -46,18 +39,20 @@ export default async function Page() {
 
 	const { startValue, offset } = calculateOffset(areaData, "totalAssets")
 
-	const {today, start} = calculateProfits(depotValues)
+	const { today, start } = calculateProfits(depotValues)
 
 	return (
 		<main className="grid grid-cols-1 gap-3">
 			<Card className="overflow-hidden">
 				<CardHeader>
-				<CardTitle>
-					<HeaderStat displays={{
-						"Depotwert": today.value,
-						"Heutiger Profit": today.profit,
-						"Gesamter Profit": start.profit,
-					}}/>
+					<CardTitle>
+						<HeaderStat
+							displays={{
+								Depotwert: today.value,
+								"Heutiger Profit": today.profit,
+								"Gesamter Profit": start.profit,
+							}}
+						/>
 					</CardTitle>
 				</CardHeader>
 				<CardContent className="m-0 px-0 pb-0">
@@ -158,7 +153,7 @@ const dataFetcher = cache(async () => {
 	}
 })
 
-function calculateProfits(depotValues: Omit<DepotValue, "id" | "depot_id">[]){
+function calculateProfits(depotValues: Omit<DepotValue, "id" | "depot_id">[]) {
 	const today = depotValues.at(-1) ?? depotValues[0]
 	const yesterday = depotValues.at(-2) ?? depotValues[0]
 	const start = depotValues[0]
@@ -171,17 +166,20 @@ function calculateProfits(depotValues: Omit<DepotValue, "id" | "depot_id">[]){
 
 	const profitAllTime = valueToday - valueStart
 
-	return {today: {
-		value: valueToday,
-		profit: profitToday,
-		row: today
+	return {
+		today: {
+			value: valueToday,
+			profit: profitToday,
+			row: today,
+		},
+		start: {
+			value: valueToday,
+			profit: profitAllTime,
+			row: start,
+		},
+		yesterday: {
+			value: valueYesterday,
+			row: yesterday,
+		},
 	}
-    , start: {
-        value: valueToday,
-        profit: profitAllTime,
-        row: start
-    }, yesterday: {
-		value: valueYesterday,
-		row: yesterday
-	}}
 }
