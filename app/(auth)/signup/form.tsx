@@ -45,7 +45,7 @@ export default function SignUpForm() {
 			toast.toast({
 				title: "Failed to log in",
 				variant: "destructive",
-				description: error.message,
+				description: error,
 			})
 			return
 		}
