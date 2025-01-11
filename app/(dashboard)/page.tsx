@@ -8,7 +8,7 @@ import AreaChart from "@/components/charts/area"
 import PositionList from "@/components/displays/position_list"
 import HeaderStat from "@/components/stat/header_stat"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import type { DepotValue } from "@/database/custom_types"
+import type { Depot, DepotValue } from "@/database/custom_types"
 import { fetchRpc } from "@/database/fetch_rpc"
 import { getUser } from "@/database/get_user_server"
 import { restructure } from "@/database/restructure_depot_position_data"
@@ -23,7 +23,7 @@ import { redirect } from "next/navigation"
 import { cache } from "react"
 // export const revalidate = 3600
 export default async function Page() {
-	const { positions, depotValues, error } = await dataFetcher()
+	const { depots, positions, depotValues, error } = await dataFetcher()
 	if (error) {
 		return <ErrorCard error={error} />
 	}
@@ -39,7 +39,7 @@ export default async function Page() {
 
 	const { startValue, offset } = calculateOffset(areaData, "totalAssets")
 
-	const { today, start } = calculateProfits(depotValues)
+	const { today, start } = calculateProfits(depotValues, depots[0])
 
 	return (
 		<main className="grid grid-cols-1 gap-3">
@@ -153,10 +153,19 @@ const dataFetcher = cache(async () => {
 	}
 })
 
-function calculateProfits(depotValues: Omit<DepotValue, "id" | "depot_id">[]) {
-	const today = depotValues.at(-1) ?? depotValues[0]
-	const yesterday = depotValues.at(-2) ?? depotValues[0]
-	const start = depotValues[0]
+function calculateProfits(
+	depotValues: Omit<DepotValue, "id" | "depot_id">[],
+	depot: Omit<Depot, "user_id">,
+) {
+	const defaultValue = {
+		liquid_assets: depot.liquid_assets,
+		stock_assets: 0,
+		timestamp: toISODateOnly(getCurrentDate()),
+	}
+	const today: (typeof depotValues)[0] =
+		depotValues.at(-1) ?? depotValues[0] ?? defaultValue
+	const yesterday = depotValues.at(-2) ?? depotValues[0] ?? defaultValue
+	const start = depotValues[0] ?? defaultValue
 
 	const valueToday = today.stock_assets + today.liquid_assets
 	const valueYesterday = yesterday.stock_assets + yesterday.liquid_assets

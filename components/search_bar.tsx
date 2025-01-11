@@ -11,15 +11,15 @@ import {
 	CommandItem,
 	CommandList,
 } from "@/components/ui/command"
-import { useEffect, useState } from "react"
+import { type ComponentPropsWithoutRef, useEffect, useState } from "react"
 
 import type { Stock } from "@/database/custom_types"
 import { getStockFromSearchString } from "@/database/search_stock"
 import { cn } from "@/lib/utils"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
-import type React from "react"
 import { getStockPagePath } from "../lib/get_stock_path"
+import { Button } from "./ui/button"
 
 interface props {
 	doRedirect: boolean
@@ -84,25 +84,26 @@ export default function SearchBar({ doRedirect, className }: props) {
 	)
 }
 
-interface PopOutProps extends props {
-	trigger: (props: object) => React.ReactNode
-}
+interface PopOutProps extends props, ComponentPropsWithoutRef<"div"> {}
 
 export function SearchBarPopOut({
 	doRedirect,
 	className,
-	trigger,
+	children,
 }: PopOutProps) {
 	const [open, setOpen] = useState(false)
-	const SearchBarTrigger = trigger({ onClick: () => setOpen(true) })
 	return (
 		<>
-			{SearchBarTrigger}
+			<Button
+				asChild
+				className={cn("p-0 m-0", className)}
+				variant="ghost"
+				onClick={() => setOpen(true)}
+			>
+				{children}
+			</Button>
 			<CommandDialog open={open} onOpenChange={setOpen}>
-				<SearchBar
-					doRedirect={doRedirect}
-					className={cn("w-full border", className)}
-				/>
+				<SearchBar doRedirect={doRedirect} className={cn("w-full border")} />
 			</CommandDialog>
 		</>
 	)

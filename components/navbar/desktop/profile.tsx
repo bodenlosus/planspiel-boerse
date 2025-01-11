@@ -1,28 +1,43 @@
 "use client"
 
-import { Check, ChevronsUpDown, GalleryVerticalEnd } from "lucide-react"
-import * as React from "react"
+import { ChevronsUpDown, LogOut } from "lucide-react"
 
+import { logout } from "@/app/(auth)/actions"
+import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 import {
 	DropdownMenu,
 	DropdownMenuContent,
 	DropdownMenuItem,
+	DropdownMenuLabel,
+	DropdownMenuSeparator,
 	DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import {
 	SidebarMenu,
 	SidebarMenuButton,
 	SidebarMenuItem,
+	useSidebar,
 } from "@/components/ui/sidebar"
+import { createClient } from "@/utils/supabase/client"
+import type { UserResponse } from "@supabase/supabase-js"
+import { useEffect, useState } from "react"
 
-export function VersionSwitcher({
-	versions,
-	defaultVersion,
-}: {
-	versions: string[]
-	defaultVersion: string
-}) {
-	const [selectedVersion, setSelectedVersion] = React.useState(defaultVersion)
+export function NavUser() {
+	const { isMobile } = useSidebar()
+
+	const [user, setUser] = useState<UserResponse | null>(null)
+	const supabase = createClient()
+
+	const userName = user?.data.user?.user_metadata?.name as string | undefined
+	const userEmail = user?.data.user?.email
+
+	useEffect(() => {
+		const getUser = async () => {
+			const u = await supabase.auth.getUser()
+			setUser(u)
+		}
+		getUser().catch(() => {})
+	}, [supabase])
 
 	return (
 		<SidebarMenu>
@@ -33,29 +48,64 @@ export function VersionSwitcher({
 							size="lg"
 							className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
 						>
-							<div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground">
-								<GalleryVerticalEnd className="size-4" />
+							<Avatar className="h-8 w-8 rounded-lg">
+								<AvatarFallback className="rounded-lg">
+									{userName?.charAt(0) ?? ""}
+								</AvatarFallback>
+							</Avatar>
+							<div className="grid flex-1 text-left text-sm leading-tight">
+								<span className="truncate font-semibold">{userName}</span>
+								<span className="truncate text-xs">{userEmail}</span>
 							</div>
-							<div className="flex flex-col gap-0.5 leading-none">
-								<span className="font-semibold">Documentation</span>
-								<span className="">v{selectedVersion}</span>
-							</div>
-							<ChevronsUpDown className="ml-auto" />
+							<ChevronsUpDown className="ml-auto size-4" />
 						</SidebarMenuButton>
 					</DropdownMenuTrigger>
 					<DropdownMenuContent
-						className="w-[--radix-dropdown-menu-trigger-width]"
-						align="start"
+						className="w-[--radix-dropdown-menu-trigger-width] min-w-56 rounded-lg"
+						side={isMobile ? "bottom" : "right"}
+						align="end"
+						sideOffset={4}
 					>
-						{versions.map((version) => (
-							<DropdownMenuItem
-								key={version}
-								onSelect={() => setSelectedVersion(version)}
-							>
-								v{version}{" "}
-								{version === selectedVersion && <Check className="ml-auto" />}
-							</DropdownMenuItem>
-						))}
+						<DropdownMenuLabel className="p-0 font-normal">
+							<div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
+								<Avatar className="h-8 w-8 rounded-lg">
+									<AvatarFallback className="rounded-lg">
+										{userName?.charAt(0) ?? ""}
+									</AvatarFallback>
+								</Avatar>
+								<div className="grid flex-1 text-left text-sm leading-tight">
+									<span className="truncate font-semibold">{userName}</span>
+									<span className="truncate text-xs">{userEmail}</span>
+								</div>
+							</div>
+						</DropdownMenuLabel>
+						<DropdownMenuSeparator />
+						{/* <DropdownMenuGroup>
+              <DropdownMenuItem>
+                <Sparkles />
+                Upgrade to Pro
+              </DropdownMenuItem>
+            </DropdownMenuGroup>
+            <DropdownMenuSeparator />
+            <DropdownMenuGroup>
+              <DropdownMenuItem>
+                <BadgeCheck />
+                Account
+              </DropdownMenuItem>
+              <DropdownMenuItem>
+                <CreditCard />
+                Billing
+              </DropdownMenuItem>
+              <DropdownMenuItem>
+                <Bell />
+                Notifications
+              </DropdownMenuItem>
+            </DropdownMenuGroup>
+            <DropdownMenuSeparator /> */}
+						<DropdownMenuItem onClick={() => logout()}>
+							<LogOut />
+							Log out
+						</DropdownMenuItem>
 					</DropdownMenuContent>
 				</DropdownMenu>
 			</SidebarMenuItem>

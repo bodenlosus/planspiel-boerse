@@ -62,6 +62,7 @@ export function StatCard({
 					className="text-base gap-1 px-3"
 					headerClassName="text-3xl font-bold"
 					displays={{
+						"Aktueller Wert": currentPrice.close,
 						"Änderung 24h": change24h,
 						"Änderung Heute": absoluteChange,
 						"Änderung in %": relativeChange,

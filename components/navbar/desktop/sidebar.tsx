@@ -1,3 +1,5 @@
+import { SearchBarPopOut } from "@/components/search_bar"
+import { Button } from "@/components/ui/button"
 import {
 	Sidebar,
 	SidebarContent,
@@ -9,8 +11,8 @@ import {
 	SidebarMenuButton,
 	SidebarMenuItem,
 } from "@/components/ui/sidebar"
-import { Home, type LucideIcon, SearchIcon, Trophy } from "lucide-react"
-import { VersionSwitcher } from "./profile"
+import { Home, type LucideIcon, SearchIcon } from "lucide-react"
+import { NavUser } from "./profile"
 
 export function AppSidebar() {
 	interface ItemT {
@@ -20,18 +22,29 @@ export function AppSidebar() {
 	}
 	const tree: Record<string, Array<ItemT>> = {
 		Depot: [{ title: "Mein Depot", url: "/", icon: Home }],
-		Aktien: [{ title: "Suche", url: "/search", icon: SearchIcon }],
-		Wettbewerb: [{ title: "Leaderboard", url: "/leaderboard", icon: Trophy }],
+		// Aktien: [{ title: "Suche", url: "/search", icon: SearchIcon }],
+		// Wettbewerb: [{ title: "Leaderboard", url: "/leaderboard", icon: Trophy }],
 	}
 	return (
-		<Sidebar className="bg-sidebar">
+		<Sidebar className="bg-sidebar px-3 pt-3">
 			<SidebarHeader>
-				<VersionSwitcher
-					versions={["Hauptdepot"]}
-					defaultVersion="Hauptdepot"
-				/>
+				<h1 className="font-bold text-3xl">Planspiel Boerse</h1>
 			</SidebarHeader>
 			<SidebarContent>
+				<SidebarMenu>
+					<SidebarMenuItem>
+						<SidebarMenuButton asChild>
+							<SearchBarPopOut doRedirect>
+								<Button variant={"outline"}>
+									<SearchIcon className="size-5 shrink-0 stroke-muted-foreground" />
+									<span className="text-muted-foreground shrink truncate hidden lg:inline">
+										Search for a Stock...
+									</span>
+								</Button>
+							</SearchBarPopOut>
+						</SidebarMenuButton>
+					</SidebarMenuItem>
+				</SidebarMenu>
 				{Object.entries(tree).map(([label, items]) => (
 					<SidebarGroup key={label}>
 						<SidebarGroupLabel>{label}</SidebarGroupLabel>
@@ -51,7 +64,7 @@ export function AppSidebar() {
 				))}
 			</SidebarContent>
 			<SidebarFooter>
-				<VersionSwitcher versions={["Main"]} defaultVersion="Main" />
+				<NavUser />
 			</SidebarFooter>
 		</Sidebar>
 	)
