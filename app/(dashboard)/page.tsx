@@ -18,16 +18,26 @@ import {
 	getDateCertainDaysAgo,
 	toISODateOnly,
 } from "@/lib/date_utils"
-import { LineChart as LinechartIcon } from "lucide-react"
+import { LineChart as LinechartIcon, TableCellsMerge, TreePalm, Trees } from "lucide-react"
 import { redirect } from "next/navigation"
 import { cache } from "react"
+import TreeChart from "@/components/charts/tree"
 // export const revalidate = 3600
 export default async function Page() {
 	const { depots, positions, depotValues, error } = await dataFetcher()
 	if (error) {
 		return <ErrorCard error={error} />
 	}
+	const posRestruc = restructure(positions);
+	const treeData = posRestruc.map(position => {
 
+		const possesedValue = position.position.amount * position.currentPrice[0].close
+		const profit = position.position.profit - position.position.expenses + possesedValue
+		return {value: possesedValue, name: position.stock.symbol, relProf: profit/possesedValue}
+	}) 
+
+	// const treeData = positions.map(position => ({value: position.amount * position.})
+	console.log(positions)
 	const areaData = []
 
 	for (const value of depotValues) {
@@ -43,7 +53,7 @@ export default async function Page() {
 
 	return (
 		<main className="grid grid-cols-1 gap-3">
-			<Card className="overflow-hidden">
+			<Card className="overflow-hidden border-none">
 				<CardHeader>
 					<CardTitle>
 						<HeaderStat
@@ -67,14 +77,21 @@ export default async function Page() {
 								xKey="timestamp"
 								yKey="totalAssets"
 							/>
+							
+						</Chart>
+						<Chart name="tree">
+							<TreeChart data={treeData} dataKey="value"/>
 						</Chart>
 						<ChartIcon name="line">
 							<LinechartIcon className="size-7 md:size-5 stroke-muted-foreground" />
 						</ChartIcon>
+						<ChartIcon name="tree">
+							<TableCellsMerge className="size-7 md:size-5 stroke-muted-foreground" />
+						</ChartIcon>
 					</ChartContainer>
 				</CardContent>
 			</Card>
-			<PositionList positions={restructure(positions)} />
+			<PositionList positions={posRestruc} />
 		</main>
 	)
 }
@@ -191,4 +208,8 @@ function calculateProfits(
 			row: yesterday,
 		},
 	}
+}
+
+function relativeDeviation(value1: number, value2: number): number {
+	return (value1 - value2) / value2
 }
