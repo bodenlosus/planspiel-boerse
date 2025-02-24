@@ -26,6 +26,8 @@ import StockChartContainer from "../charts/container"
 import HeaderStat from "../stat/header_stat"
 import BuyStockDialog from "../transaction_dialogs/buy_stock_dialog"
 import SellStockDialog from "../transaction_dialogs/sell_stock_dialog"
+import { getIconURL } from "@/lib/icon_url"
+import URLIcon from "../icon"
 
 type CardProps = ComponentPropsWithoutRef<"div">
 
@@ -45,22 +47,32 @@ export function StatCard({
 	const change24h = currentPrice.close - (referencePrice?.close ?? 0)
 	const absoluteChange = currentPrice.close - currentPrice.open
 	const relativeChange = (absoluteChange / currentPrice.open) * 100
+	
 
 	return (
 		<Card className={cn(className)}>
-			<CardHeader className="flex-row flex-wrap justify-left gap-x-4 gap-y-1">
-				<CardTitle className="text-3xl font-extrabold">
-					{stock.symbol}
-				</CardTitle>
 
-				<h1>{stock.name}</h1>
-				<Badge className="w-fit">{stock.description}</Badge>
+			<CardHeader className="w-full flex flex-row h-fit">
+
+				
+				
+				<CardTitle className="w-full flex flex-row gap-4 h-fit items-center">
+				<URLIcon className="size-[4lh] rounded-lg shadow" size={100} iconURL={getIconURL(stock, 100)} />
+					<div className="">
+					<span className="text-3xl font-extrabold mr-4">{stock.symbol}</span>
+					<span>{stock.name}</span>
+					<br/>
+					<span className="text-muted-foreground font-normal w-fit mt-2">{stock.description}</span>
+					</div>
+				</CardTitle>
+				
 			</CardHeader>
+
 			<CardContent className="flex flex-col gap-3 pb-0 h-auto">
 				<HeaderStat
 					subClassName="text-sm"
-					className="text-base gap-1 px-3"
-					headerClassName="text-3xl font-bold"
+					className="text-base gap-1 px- text-2xl3"
+					headerClassName="text-2xl font-semibold"
 					displays={{
 						"Aktueller Wert": currentPrice.close,
 						"Änderung 24h": change24h,
@@ -108,7 +120,7 @@ export function ChartCard({ prices, datePicker, className }: ChartCardProps) {
 	return (
 		<Card className={cn(className)}>
 			<CardHeader className="flex-col gap-2">
-				<CardDescription>Graph View</CardDescription>
+				<CardDescription>Chart</CardDescription>
 				<CardTitle className="">
 					{prices.at(0)?.timestamp} - {prices.at(-1)?.timestamp}
 				</CardTitle>
@@ -168,12 +180,12 @@ export function StockPositionCard({
 	return (
 		<Card className={cn(className)}>
 			<CardHeader className="flex-row flex-wrap justify-left gap-x-4 gap-y-1">
-				<CardDescription className="">Your Positions</CardDescription>
+				<CardDescription className="">Deine Positionen</CardDescription>
 			</CardHeader>
 			<CardContent className="flex flex-col gap-3 ">
 				<div className="flex flex-row flex-wrap gap-3 w-full *:flex-grow mb-3 h-fit">
 					<div className="px-4 py-2 flex flex-col flex-nowrap bg-background border border-border/20 rounded shadow-sm">
-						<span className="text-sm text-muted-foreground">You own</span>
+						<span className="text-sm text-muted-foreground">Anzahl</span>
 
 						<span className="text-sm flex flex-row items-baseline gap-1 text-muted-foreground">
 							<span className="text-2xl font-mono font-normal text-foreground">
@@ -182,7 +194,7 @@ export function StockPositionCard({
 						</span>
 					</div>
 					<div className="px-4 py-2 flex flex-col flex-nowrap bg-background border border-border/20 rounded shadow-sm">
-						<span className=" text-muted-foreground text-sm">worth</span>
+						<span className=" text-muted-foreground text-sm">Wert</span>
 
 						<span className="text-sm flex flex-row items-baseline gap-1 text-muted-foreground">
 							<span className="text-2xl font-mono font-normal text-foreground">

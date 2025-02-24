@@ -17,6 +17,7 @@ export function restructure(data: dataT): Array<ReturnT> {
 				name: row.name,
 				symbol: row.symbol,
 				description: row.description,
+				type: row.type,		
 			},
 			currentPrice: [
 				{

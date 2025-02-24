@@ -35,8 +35,8 @@ export default function BuyStockDialog(props: {
 	return (
 		<PrimitiveDialog
 			reload
-			title="Buy Stock"
-			action="Buy"
+			title="Kaufen"
+			action="Kaufen"
 			{...props}
 			handleTransaction={handleStockPurchase}
 		/>

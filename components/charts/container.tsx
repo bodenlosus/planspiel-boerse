@@ -36,7 +36,7 @@ export default function StockChartContainer({ data }: props) {
 	return (
 		<ChartContainer
 			defaultName="line"
-			className="w-full border rounded-md bg-muted/50 shadow overflow-hidden"
+			className="w-full border rounded-md bg-muted/25 shadow overflow-hidden"
 		>
 			<Chart name="candlestick">
 				<CandleStickChart

@@ -9,8 +9,8 @@ interface props {
 }
 export function StockStat({ name, current, reference, labels }: props) {
 	return (
-		<div className="w-min overflow-hidden bg-background rounded-sm shadow-sm border border-border/20 px-4 py-2 flex-grow flex-shrink">
-			<h1 className=" text-sm">{name}</h1>
+		<div className="">
+			<h1 className=" text-xs">{name}</h1>
 			<DisplayTypeBased
 				current={current}
 				reference={reference}
@@ -56,7 +56,7 @@ function DiplayWithoutReference({ current }: DiplayWithoutReferenceT) {
 	return (
 		<span className="flex flex-row gap-x-2 gap-y-0 flex-wrap">
 			<span className="flex flex-row gap-1">
-				<span className="text-xl font-semibold number">
+				<span className="text-lg font-semibold number">
 					{to_display_string(current)}
 				</span>
 			</span>
@@ -82,11 +82,11 @@ function DiplayWithReference({
 					<WinLossIndicator sign={relativeChange} />
 				</span>
 
-				<span className="text-xl font-semibold number">
+				<span className="text-lg font-semibold number">
 					{to_display_string(current)}
 				</span>
 			</span>
-			<span className="text-sm font-semibold text-muted-foreground number float-right">
+			<span className="text-xs font-semibold text-muted-foreground number float-right">
 				{relativeChange > 0 ? "+" : "-"}
 				{Math.abs(relativeChange).toFixed(2)}% {label}
 			</span>

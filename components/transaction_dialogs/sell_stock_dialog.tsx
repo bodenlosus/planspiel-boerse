@@ -29,8 +29,8 @@ export default function SellStockDialog(props: {
 }) {
 	return (
 		<PrimitiveDialog
-			title="Sell Stock"
-			action="Sell"
+			title="Verkaufen"
+			action="Verkaufen"
 			reload
 			triggerVariant="outline"
 			{...props}

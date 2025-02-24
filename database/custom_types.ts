@@ -24,3 +24,4 @@ export type StockPosition =
 	Database["depots"]["Tables"]["DepotPositions"]["Row"]
 export type DepotValue = Database["depots"]["Tables"]["DepotValues"]["Row"]
 export type Depot = Database["depots"]["Tables"]["Depots"]["Row"]
+export type StockType = Database["public"]["Enums"]["StockType"]

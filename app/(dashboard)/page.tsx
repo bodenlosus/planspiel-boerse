@@ -5,7 +5,6 @@ import ChartIcon from "@/components/charts/primitive/chart_icon"
 import ChartContainer from "@/components/charts/primitive/container"
 
 import AreaChart from "@/components/charts/area"
-import PositionList from "@/components/displays/position_list"
 import HeaderStat from "@/components/stat/header_stat"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import type { Depot, DepotValue } from "@/database/custom_types"
@@ -22,6 +21,7 @@ import { LineChart as LinechartIcon, TableCellsMerge, TreePalm, Trees } from "lu
 import { redirect } from "next/navigation"
 import { cache } from "react"
 import TreeChart from "@/components/charts/tree"
+import PositionTabView from "@/components/displays/tab_view"
 // export const revalidate = 3600
 export default async function Page() {
 	const { depots, positions, depotValues, error } = await dataFetcher()
@@ -37,7 +37,6 @@ export default async function Page() {
 	}) 
 
 	// const treeData = positions.map(position => ({value: position.amount * position.})
-	console.log(positions)
 	const areaData = []
 
 	for (const value of depotValues) {
@@ -57,16 +56,18 @@ export default async function Page() {
 				<CardHeader>
 					<CardTitle>
 						<HeaderStat
+							className="justify-start"
 							displays={{
-								Depotwert: today.value,
+								"Depotwert": today.value,
 								"Heutiger Profit": today.profit,
 								"Gesamter Profit": start.profit,
+								"Liquides Geld": depots[0].liquid_assets,
 							}}
 						/>
 					</CardTitle>
 				</CardHeader>
 				<CardContent className="m-0 px-0 pb-0">
-					<ChartContainer className="*:px-6" defaultName="line">
+					<ChartContainer className="rounded-xl border" defaultName="line">
 						<Chart name="line">
 							<AreaChart
 								className="aspect-[4/3] md:aspect-[20/9] lg:aspect-[6/2] xl:aspect-[8/2]"
@@ -80,7 +81,7 @@ export default async function Page() {
 							
 						</Chart>
 						<Chart name="tree">
-							<TreeChart data={treeData} dataKey="value"/>
+							<TreeChart className="max-h-[500px] w-full" data={treeData} dataKey="value"/>
 						</Chart>
 						<ChartIcon name="line">
 							<LinechartIcon className="size-7 md:size-5 stroke-muted-foreground" />
@@ -91,7 +92,7 @@ export default async function Page() {
 					</ChartContainer>
 				</CardContent>
 			</Card>
-			<PositionList positions={posRestruc} />
+			<PositionTabView positions={posRestruc} />
 		</main>
 	)
 }

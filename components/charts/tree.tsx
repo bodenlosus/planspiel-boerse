@@ -14,20 +14,21 @@ import {
 } from "recharts"
 import { Separator } from "../ui/separator"
 import type { TreemapNode } from "recharts/types/util/types"
+import { getIconURL, getIconURLStock } from "@/lib/icon_url"
+import URLIcon from "../icon"
 
 interface props<T extends Record<string, number | string>>
 	extends React.ComponentPropsWithoutRef<"div"> {
 	data: Array<T>
 	dataKey: Extract<keyof T, string>
 }
-const COLORS = ['#8889DD', '#9597E4', '#8DC77B', '#A5D297', '#E2CF45', '#F8C12D'];
 
 interface ContentProps extends TreemapNode {
 	data: Record<string, number | string>[]
 	key: string
 }
 function CustomContent(props: ContentProps) {
-	const { root, depth, x, y, width, height, index, data, key, name, value } = props;
+	const {depth, x, y, width, height, index, data, name, value } = props;
 	const position = data.at(index)
 	let prof = 0
 	let color = ""
@@ -88,9 +89,9 @@ export default function TreeChart<T extends Record<string, number | string>>({
 	return (
 		<ChartContainer
 			config={chartConfig}
-			className={cn("min-h[200px]", className)}
+			className={cn("min-h[200px] pl-3 pt-0.5", className)}
 		>
-			<Treemap data={data} dataKey={dataKey} content={<CustomContent data={data} key="relProf" x={0} y={0} width={0} height={0} depth={0} index={0} name={""} value={0}/>}/>
+			<Treemap isAnimationActive={false} data={data} dataKey={dataKey} content={<CustomContent data={data} key="relProf" x={0} y={0} width={0} height={0} depth={0} index={0} name={""} value={0}/>}/>
 		</ChartContainer>
 	)
 }

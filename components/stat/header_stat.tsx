@@ -19,19 +19,21 @@ export default function HeaderStat({
 	return (
 		<div
 			className={cn(
-				"grid grid-flow-col grid-cols-3 grid-rows-[repeat(2,min-content)] w-full justify-around justify-items-start",
+				"grid grid-cols-[repeat(auto-fit,minmax(200px,1fr))] w-full",
 				className,
 			)}
 		>
 			{Object.entries(displays).map(([name, value]) => (
+				<div key={name} className="">
 				<Template
 					className={subClassName}
 					headerClassName={headerClassName}
 					signClassName={signClassName}
 					name={name}
-					key={name}
 					value={value}
+				
 				/>
+				</div>
 			))}
 		</div>
 	)

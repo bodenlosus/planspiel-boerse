@@ -22,13 +22,9 @@ export default function StockStats<TStructure extends Record<string, string>>({
 		reference: reference ? reference[key] : undefined,
 		labels: labels ? labels[key] : undefined,
 	}))
-	return (
-		<div className={cn("flex flex-row gap-3 flex-wrap", className)}>
-			{stats.map((stat) => (
+	return (stats.map((stat) => (
 				<>
 					<StockStat key={stat.name} {...stat} />
 				</>
-			))}
-		</div>
-	)
+			)))
 }
